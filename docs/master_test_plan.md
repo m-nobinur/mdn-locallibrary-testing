@@ -112,16 +112,16 @@ Each level is tagged with a `pytest` marker so they can be run independently or 
 - Dev server responds correctly on all key URLs
 - README updated with MDN attribution and project overview
 - This document created
-- `docs/challenge_log.md` created
+- [docs/challenge_log.md](challenge_log.md) created
 
 **Status:** Complete (2026-04-26)
 
 **Evidence artefacts:**
 
-- `docs/evidence/phase-1/README.md` — Phase 1 evidence index with embedded screenshots and verification summary
-- `docs/evidence/phase-1/home-page.png` — confirms the app is running and the public catalogue page loads
-- `docs/evidence/phase-1/admin-dashboard.png` — confirms the admin setup is functional after superuser creation
-- `docs/evidence/phase-1/github-repo.png` — confirms the public repository and Phase 1 GitHub setup evidence
+- [docs/evidence/phase-1/README.md](evidence/phase-1/README.md) — Phase 1 evidence index with embedded screenshots and verification summary
+- [docs/evidence/phase-1/home-page.png](evidence/phase-1/home-page.png) — confirms the app is running and the public catalogue page loads
+- [docs/evidence/phase-1/admin-dashboard.png](evidence/phase-1/admin-dashboard.png) — confirms the admin setup is functional after superuser creation
+- [docs/evidence/phase-1/github-repo.png](evidence/phase-1/github-repo.png) — confirms the public repository and Phase 1 GitHub setup evidence
 
 ---
 

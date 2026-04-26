@@ -8,16 +8,16 @@
 
 A software quality assurance study project built on MDN's Django tutorial app — a modest library catalogue that, frankly, turns out to be a pretty ideal specimen for demonstrating a full test-pyramid implementation. On top of the original Django application, this repo adds a DRF REST API, borrow/return workflows, and nine test phases ranging from isolated unit assertions up to Selenium end-to-end journeys.
 
-Test strategy lives in `docs/master_test_plan.md`. Every stumble along the way is catalogued in `docs/challenge_log.md`.
+Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Every stumble along the way is catalogued in [docs/challenge_log.md](docs/challenge_log.md).
 
 ---
 
 ## Phase 1 evidence
 
-Baseline setup evidence is organised by phase under `docs/evidence/`.
+Baseline setup evidence is organised by phase under [docs/evidence/](docs/evidence/).
 
-- `docs/evidence/README.md` — evidence index for all project phases
-- `docs/evidence/phase-1/README.md` — Phase 1 proof page with embedded screenshots and verification notes
+- [docs/evidence/README.md](docs/evidence/README.md) — evidence index for all project phases
+- [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — Phase 1 proof page with embedded screenshots and verification notes
 
 These artefacts support the completed baseline verification and should be extended phase by phase as new evidence is generated.
 
@@ -51,7 +51,7 @@ mdn-locallibrary-testing/
 
 ## Compatibility notes
 
-**Python 3.14 and psycopg2.** Python 3.14 may still be usable for local SQLite-only experimentation, but it is outside Django 5.1.x's officially supported matrix and breaks `psycopg2-binary==2.9.9` because the C extension references `_PyInterpreterState_Get`, a private CPython symbol removed in 3.14. Since the default local setup uses SQLite, the PostgreSQL driver is not required there. For PostgreSQL-backed deployments matching production, use Python 3.10 with `requirements-prod.txt`. Full details in `docs/challenge_log.md` (CH-001).
+**Python 3.14 and psycopg2.** Python 3.14 may still be usable for local SQLite-only experimentation, but it is outside Django 5.1.x's officially supported matrix and breaks `psycopg2-binary==2.9.9` because the C extension references `_PyInterpreterState_Get`, a private CPython symbol removed in 3.14. Since the default local setup uses SQLite, the PostgreSQL driver is not required there. For PostgreSQL-backed deployments matching production, use [requirements-prod.txt](requirements-prod.txt). Full details in [docs/challenge_log.md](docs/challenge_log.md) (CH-001).
 
 `runtime.txt` currently pins production deployments to **Python 3.10.2**. To keep local development, CI, and production aligned, prefer Python 3.10 for day-to-day work unless you are intentionally testing a different interpreter.
 

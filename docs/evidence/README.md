@@ -4,7 +4,7 @@ This directory groups project evidence by delivery phase so screenshots, reports
 
 ## Phases
 
-- `phase-1/README.md` — clean start and baseline setup evidence
+- [phase-1/README.md](phase-1/README.md) — clean start and baseline setup evidence
 
 Add each later phase here using the same structure:
 
