@@ -137,6 +137,16 @@ pytest                                 # all non-system tests
 RUN_SYSTEM_TESTS=1 pytest -m system    # Selenium journeys
 ```
 
+### Test compatibility hooks
+
+This repository includes a few test-only compatibility hooks in `conftest.py` for local Python 3.14 runs:
+
+- A safe fallback patch for Django's test-client template context copying (avoids the known `RequestContext` copy crash).
+- A test-time staticfiles backend override (`StaticFilesStorage`) so tests do not depend on a prebuilt WhiteNoise manifest.
+- Automatic creation of `STATIC_ROOT` during tests to avoid middleware warnings about a missing staticfiles directory.
+
+These hooks are only for pytest execution and do not change production runtime behaviour.
+
 ---
 
 ## Linting and import sorting

@@ -155,8 +155,154 @@ No functional impact on Phase 4 deliverables. Risk is future-facing: warning noi
 
 ---
 
-## CH-006 — (placeholder for next challenge)
+## CH-006 — DRF route names collided with catalog HTML route names
 
-*To be completed when the next challenge arises.*
+- **Date:** 2026-04-27
+- **Phase:** Phase 4
+- **Severity:** Medium
+
+### Symptom
+
+`catalog/tests/test_models.py::AuthorModelTest::test_get_absolute_url` failed because `Author.get_absolute_url()` returned an API URL:
+
+```text
+'/api/authors/1/' != '/catalog/author/1'
+```
+
+This also cascaded into `AuthorCreate` redirect assertions in `catalog/tests/test_views.py`.
+
+### Root cause
+
+The DRF router in `catalog/api/urls.py` created names like `author-detail`, `book-detail`, and `genre-detail`. Because `locallibrary/urls.py` included those API routes without a namespace, they shared global route names with the HTML views in `catalog/urls.py`. As a result, `reverse("author-detail")` in `catalog/models.py` could resolve to the API endpoint instead of the catalog page.
+
+### Investigation
+
+1. Reproduced failures with `pytest catalog/tests -q`.
+2. Confirmed `Author.get_absolute_url()` still uses `reverse("author-detail")`.
+3. Checked URL configuration and found un-namespaced `path('api/', include('catalog.api.urls'))`.
+4. Verified DRF `DefaultRouter` generated conflicting names.
+
+### Resolution
+
+- Added `app_name = 'catalog_api'` in `catalog/api/urls.py`.
+- Updated `locallibrary/urls.py` to include API routes under the explicit namespace `catalog_api`.
+- Re-ran the catalog suite to verify model URL assertions now resolve to catalog HTML routes.
+
+### Impact
+
+Restored deterministic URL reversing for model `get_absolute_url()` methods and removed API-vs-HTML route ambiguity.
+
+---
+
+## CH-007 — Django test client context copy crash on Python 3.14
+
+- **Date:** 2026-04-27
+- **Phase:** Phase 4
+- **Severity:** High
+
+### Symptom
+
+Multiple catalog view tests crashed during template rendering with:
+
+```text
+AttributeError: 'super' object has no attribute 'dicts'
+```
+
+The traceback consistently pointed to Django internals: `django/template/context.py` via `django/test/client.py::store_rendered_templates`.
+
+### Root cause
+
+On the local toolchain (`Python 3.14.4`), Django's context copy path used by test instrumentation (`copy(context)`) fails for `RequestContext`/`BaseContext` objects. This is an environment/framework compatibility issue, not an application view bug.
+
+### Investigation
+
+1. Confirmed stack traces terminate in Django internals before test assertions run.
+2. Reviewed `django/test/client.py` and identified `store_rendered_templates()` as the failure point.
+3. Verified failures occurred across unrelated template-rendering tests.
+
+### Resolution
+
+- Added a Python 3.14 compatibility shim in `conftest.py` inside `pytest_configure()`.
+- Patched `django.test.client.store_rendered_templates` to:
+	- keep Django's normal behavior when `copy(context)` succeeds,
+	- fall back to a flattened context snapshot when that copy raises `AttributeError`.
+
+### Impact
+
+Re-enabled template-rendering assertions (`response.context`, `assertTemplateUsed`, redirect follow checks) across the catalog test suite on Python 3.14.
+
+---
+
+## CH-008 — WhiteNoise manifest static storage blocked template rendering in tests
+
+- **Date:** 2026-04-27
+- **Phase:** Phase 4
+- **Severity:** Medium
+
+### Symptom
+
+After fixing context-copy crashes, view tests failed with:
+
+```text
+ValueError: Missing staticfiles manifest entry for 'css/styles.css'
+```
+
+### Root cause
+
+`locallibrary/settings.py` uses `whitenoise.storage.CompressedManifestStaticFilesStorage` via `STORAGES['staticfiles']`. In local test runs without a prebuilt `collectstatic` manifest, template `{% static %}` resolution fails.
+
+### Investigation
+
+1. Re-ran `pytest catalog/tests -q` after the context-copy fix.
+2. Confirmed failures moved to static template tag resolution in WhiteNoise storage.
+3. Verified no staticfiles manifest had been generated in test context.
+
+### Resolution
+
+- Added an autouse pytest fixture in `conftest.py` to set test-time staticfiles backend to:
+	- `django.contrib.staticfiles.storage.StaticFilesStorage`
+
+This keeps production static handling unchanged while making unit tests independent of manifest build artifacts.
+
+### Impact
+
+Catalog view tests now render templates reliably in local CI-style runs without requiring `collectstatic` as a pre-step.
+
+---
+
+## CH-009 — Warning noise in pytest output after functional fixes
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 4
+- **Severity:** Low
+
+### Symptom
+
+After catalog tests were passing, pytest still emitted warning noise from two sources:
+
+```text
+DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated ...
+UserWarning: No directory at: .../staticfiles/
+```
+
+### Root cause
+
+- The deprecation warnings are produced by Django internals (`django.contrib.auth.decorators`) on Python 3.14.
+- The staticfiles warning is raised by WhiteNoise middleware when `STATIC_ROOT` does not exist at test startup.
+
+### Investigation
+
+1. Re-ran `pytest catalog/tests -q` after functional repairs.
+2. Verified warning sources in stack traces and confirmed warnings came from framework/runtime setup rather than application logic.
+3. Confirmed warning volume obscured normal test output.
+
+### Resolution
+
+- Added targeted `filterwarnings` in `pytest.ini` for the known Django/Python 3.14 deprecation pattern.
+- Updated `conftest.py` test fixture to create `STATIC_ROOT` automatically (`Path(settings.STATIC_ROOT).mkdir(...)`) during pytest runs.
+
+### Impact
+
+Catalog test output is significantly cleaner, while warning handling remains explicit and constrained to test execution.
 
 ---
