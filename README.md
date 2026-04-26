@@ -12,6 +12,17 @@ Test strategy lives in `docs/master_test_plan.md`. Every stumble along the way i
 
 ---
 
+## Phase 1 evidence
+
+Baseline setup evidence is organised by phase under `docs/evidence/`.
+
+- `docs/evidence/README.md` — evidence index for all project phases
+- `docs/evidence/phase-1/README.md` — Phase 1 proof page with embedded screenshots and verification notes
+
+These artefacts support the completed baseline verification and should be extended phase by phase as new evidence is generated.
+
+---
+
 ## The application
 
 LocalLibrary models a small public lending library. Unauthenticated visitors browse books and authors; authenticated members manage loan renewals; librarian-role users get full administrative control.
@@ -29,7 +40,7 @@ mdn-locallibrary-testing/
 ├── catalog/              # Django app — models, views, forms, URLs, templates
 ├── locallibrary/         # Project settings, root URL conf, WSGI/ASGI
 ├── templates/            # Project-level auth/registration templates
-├── docs/                 # Test plan, challenge log, traceability matrix, defect log
+├── docs/                 # Test plan, challenge log, evidence, traceability matrix, defect log
 ├── requirements.txt      # Local dev dependencies (SQLite, no psycopg2)
 ├── requirements-prod.txt # Adds psycopg2 for PostgreSQL deployments on Python ≤ 3.13
 ├── manage.py

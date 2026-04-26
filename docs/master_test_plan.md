@@ -57,10 +57,10 @@ Book  ──── BookInstance (copies, loan status)
 
 Key business rules worth testing:
 
-- A `BookInstance` can have status `m` (maintenance), `o` (on loan), `a` (available), or `r` (reserved)
+- A `BookInstance` can have status `d` (maintenance), `o` (on loan), `a` (available), or `r` (reserved)
 - Renewal date must be between today and today + 4 weeks
 - Only members with the `can_mark_returned` permission may mark a copy returned
-- `BookInstance.is_overdue` returns `True` when `due_back < date.today()` and status is `o`
+- `BookInstance.is_overdue` returns `True` when `due_back < date.today()`
 
 ### 2.3 Key URLs
 
@@ -115,6 +115,13 @@ Each level is tagged with a `pytest` marker so they can be run independently or 
 - `docs/challenge_log.md` created
 
 **Status:** Complete (2026-04-26)
+
+**Evidence artefacts:**
+
+- `docs/evidence/phase-1/README.md` — Phase 1 evidence index with embedded screenshots and verification summary
+- `docs/evidence/phase-1/home-page.png` — confirms the app is running and the public catalogue page loads
+- `docs/evidence/phase-1/admin-dashboard.png` — confirms the admin setup is functional after superuser creation
+- `docs/evidence/phase-1/github-repo.png` — confirms the public repository and Phase 1 GitHub setup evidence
 
 ---
 
