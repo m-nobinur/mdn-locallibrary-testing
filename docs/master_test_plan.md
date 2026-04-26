@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.0  
+**Document version:** 1.1  
 **Last updated:** 2026-04-26  
-**Project phase:** Phase 1 — Baseline Setup  
+**Project phase:** Phase 2 — DRF API Integration  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -73,7 +73,19 @@ Key business rules worth testing:
 | `/catalog/mybooks/` | Borrowed books | Login required |
 | `/catalog/book/<id>/renew/` | Renew loan | Librarian only |
 | `/admin/` | Django admin | Staff/superuser |
-| `/api/` | DRF browsable API | Token auth (Phase 2) |
+| `/api/` | DRF browsable API root | Token auth (Phase 2) |
+| `/api/books/` | Book list — supports `?search=`, `?ordering=` | Token |
+| `/api/books/<id>/` | Book detail | Token |
+| `/api/authors/` | Author list — supports `?search=`, `?ordering=` | Token |
+| `/api/authors/<id>/` | Author detail | Token |
+| `/api/book-instances/` | Book instance list — supports `?search=`, `?status=`, `?ordering=` | Token |
+| `/api/book-instances/<id>/` | Book instance detail | Token |
+| `/api/genres/` | Genre list — supports `?search=` | Token |
+| `/api/genres/<id>/` | Genre detail | Token |
+| `/api/languages/` | Language list — supports `?search=` | Token |
+| `/api/languages/<id>/` | Language detail | Token |
+| `/api/stats/` | Catalogue summary statistics | Token |
+| `/api/auth/token/` | Obtain auth token | Credentials (POST) |
 
 ---
 
@@ -129,20 +141,36 @@ Each level is tagged with a `pytest` marker so they can be run independently or 
 
 **Goal:** Add a token-authenticated REST API surface that later API integration tests can exercise.
 
-**Endpoints to expose:**
+**Endpoints exposed:**
 
-| Endpoint | Method | Auth |
-|----------|--------|------|
-| `/api/books/` | GET | Token |
-| `/api/books/<id>/` | GET | Token |
-| `/api/authors/` | GET | Token |
-| `/api/authors/<id>/` | GET | Token |
-| `/api/book-instances/` | GET | Token |
-| `/api/auth/token/` | POST | Credentials |
+| Endpoint | Method | Auth | Querystring support |
+|----------|--------|------|--------------------|
+| `/api/books/` | GET | Token | `?search=`, `?ordering=` |
+| `/api/books/<id>/` | GET | Token | — |
+| `/api/authors/` | GET | Token | `?search=`, `?ordering=` |
+| `/api/authors/<id>/` | GET | Token | — |
+| `/api/book-instances/` | GET | Token | `?search=`, `?status=a\|o\|d\|r`, `?ordering=` |
+| `/api/book-instances/<id>/` | GET | Token | — |
+| `/api/genres/` | GET | Token | `?search=` |
+| `/api/genres/<id>/` | GET | Token | — |
+| `/api/languages/` | GET | Token | `?search=` |
+| `/api/languages/<id>/` | GET | Token | — |
+| `/api/stats/` | GET | Token | — |
+| `/api/auth/token/` | POST | Credentials | — |
 
-**New dependencies:** `djangorestframework`, `markdown` (browsable API)
+**New dependencies:** `djangorestframework==3.15.2` (added to `requirements-dev.txt`)
 
-**Status:** Planned
+**Implementation:**
+
+- `catalog/api/__init__.py` — API package marker
+- `catalog/api/serializers.py` — read-only serializers for `Book`, `Author`, `BookInstance`, `Genre`, `Language`
+- `catalog/api/views.py` — `ReadOnlyModelViewSet` for all five resources; `SearchFilter` and `OrderingFilter` on all viewsets; `?status=` filter param on `BookInstanceViewSet`; `catalog_stats` function view
+- `catalog/api/urls.py` — `DefaultRouter` registering all five viewsets plus `/stats/` route
+- `locallibrary/urls.py` — wired `/api/` include and `/api/auth/token/`
+- `locallibrary/settings.py` — `rest_framework` and `rest_framework.authtoken` added to `INSTALLED_APPS`; `REST_FRAMEWORK` settings configured for token + session auth with `IsAuthenticated` default permission
+- Migrations run: `authtoken` tables applied cleanly
+
+**Status:** Complete (2026-04-27)
 
 ---
 
@@ -236,7 +264,16 @@ pytest -m integration_client --html=reports/integration-client-report.html
 - GET `/api/books/` without token → 401
 - GET `/api/books/` with valid token → 200 + list payload with expected fields
 - GET `/api/books/<id>/` → 200 + correct fields
+- GET `/api/books/?search=<term>` → 200 + filtered results
 - GET `/api/books/99999/` → 404
+- GET `/api/authors/` with valid token → 200 + list payload
+- GET `/api/authors/<id>/` → 200 + correct fields
+- GET `/api/book-instances/` with valid token → 200 + list payload
+- GET `/api/book-instances/?status=a` → 200 + only available instances
+- GET `/api/book-instances/<id>/` → 200 + correct fields including `is_overdue`
+- GET `/api/genres/` with valid token → 200 + list payload
+- GET `/api/languages/` with valid token → 200 + list payload
+- GET `/api/stats/` with valid token → 200 + expected count keys present
 
 **Run command:**
 
@@ -361,3 +398,5 @@ Defects discovered during testing are logged in `docs/defect_log.csv` with ID, p
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-04-26 | Project contributor | Initial document — Phase 1 baseline |
+| 1.1 | 2026-04-26 | Project contributor | Phase 2 DRF API — initial endpoints (books, authors, book-instances, auth token) |
+| 1.2 | 2026-04-27 | Project contributor | Phase 2 extended — added genres, languages, stats endpoints; search/ordering filters; status filter on book-instances; updated Phase 6 scenarios; corrected URL registration bug in `locallibrary/urls.py` |

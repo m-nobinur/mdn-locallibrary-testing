@@ -12,14 +12,14 @@ Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Eve
 
 ---
 
-## Phase 1 evidence
+## Phase evidence
 
-Baseline setup evidence is organised by phase under [docs/evidence/](docs/evidence/).
+Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/evidence/).
 
-- [docs/evidence/README.md](docs/evidence/README.md) — evidence index for all project phases
-- [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — Phase 1 proof page with embedded screenshots and verification notes
-
-These artefacts support the completed baseline verification and should be extended phase by phase as new evidence is generated.
+| Phase | Evidence |  
+|-------|----------|
+| 1 — Baseline setup | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots |
+| 2 — DRF API | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification |
 
 ---
 
@@ -38,10 +38,12 @@ Core entities: **Book**, **BookInstance** (individual copy, carries loan status 
 ```md
 mdn-locallibrary-testing/
 ├── catalog/              # Django app — models, views, forms, URLs, templates
+│   └── api/              # DRF serializers, viewsets, and router (Phase 2)
 ├── locallibrary/         # Project settings, root URL conf, WSGI/ASGI
 ├── templates/            # Project-level auth/registration templates
 ├── docs/                 # Test plan, challenge log, evidence, traceability matrix, defect log
-├── requirements.txt      # Local dev dependencies (SQLite, no psycopg2)
+├── requirements.txt      # Runtime dependencies (SQLite-only, no psycopg2)
+├── requirements-dev.txt  # DRF and testing dependencies (pytest, coverage, requests)
 ├── requirements-prod.txt # Adds psycopg2 for PostgreSQL deployments on Python ≤ 3.13
 ├── manage.py
 └── runtime.txt           # Python version pin for production deployments
@@ -65,7 +67,8 @@ Requires [uv](https://github.com/astral-sh/uv). Plain `pip` works too — substi
 
 ```bash
 uv venv .venv && source .venv/bin/activate
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt          # runtime
+uv pip install -r requirements-dev.txt      # DRF + test tools
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -76,6 +79,40 @@ python manage.py runserver
 | `http://127.0.0.1:8000/catalog/` | Catalogue home |
 | `http://127.0.0.1:8000/accounts/login/` | Member login |
 | `http://127.0.0.1:8000/admin/` | Django admin |
+| `http://127.0.0.1:8000/api/` | DRF browsable API root |
+| `http://127.0.0.1:8000/api/books/` | Book list (token required) |
+| `http://127.0.0.1:8000/api/authors/` | Author list (token required) |
+| `http://127.0.0.1:8000/api/book-instances/` | Book instance list (token required) |
+| `http://127.0.0.1:8000/api/genres/` | Genre list (token required) |
+| `http://127.0.0.1:8000/api/languages/` | Language list (token required) |
+| `http://127.0.0.1:8000/api/stats/` | Catalogue statistics summary (token required) |
+| `http://127.0.0.1:8000/api/auth/token/` | Obtain auth token (POST) |
+
+All list endpoints support `?search=<term>` and `?ordering=<field>`. Book instances additionally support `?status=a|o|d|r` to filter by availability.
+
+### Obtaining an API token
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/api/auth/token/ \
+  -d "username=<user>&password=<pass>" | python -m json.tool
+# {"token": "<your-token>"}
+
+# List all books
+curl -s http://127.0.0.1:8000/api/books/ \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Search books by title or author
+curl -s "http://127.0.0.1:8000/api/books/?search=tolkien" \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Filter book instances by availability status
+curl -s "http://127.0.0.1:8000/api/book-instances/?status=a" \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Get catalogue-wide statistics
+curl -s http://127.0.0.1:8000/api/stats/ \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+```
 
 ---
 
@@ -96,12 +133,29 @@ RUN_SYSTEM_TESTS=1 pytest -m system  # Selenium journeys
 
 ---
 
+## Linting and import sorting
+
+Run checks with the repository configuration files (`.pylintrc` and `.isort.cfg`):
+
+```bash
+python -m isort --check-only .
+python -m pylint catalog locallibrary manage.py
+```
+
+Auto-fix import ordering:
+
+```bash
+python -m isort .
+```
+
+---
+
 ## Testing phases
 
 | # | Scope | Status |
 |---|-------|--------|
 | 1 | Baseline setup and environment | Complete |
-| 2 | DRF REST API | Planned |
+| 2 | DRF REST API | Complete |
 | 3 | Borrow/return/search workflows | Planned |
 | 4 | Unit tests + coverage | Planned |
 | 5 | Django client integration tests | Planned |
