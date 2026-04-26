@@ -25,3 +25,11 @@ REQ-WF-005,3,Only user with can_mark_returned permission can access return endpo
 REQ-WF-006,3,Librarian return action sets status to available and clears borrower and due date,integration_client,tests/integration/client/test_borrow_return.py,test_return_resets_loan_fields,Planned,Phase 3 feature implemented
 REQ-WF-007,3,Successful borrow action shows user-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_success_message,Planned,Phase 3 feature implemented
 REQ-WF-008,3,Successful return action shows librarian-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_return_success_message,Planned,Phase 3 feature implemented
+REQ-UNIT-001,4,BookInstance.is_overdue returns True when due_back is in the past,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_true_for_past_date,Passed,
+REQ-UNIT-002,4,BookInstance.is_overdue returns False when due_back is today or null,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_false_for_today_and_none,Passed,
+REQ-UNIT-003,4,Renewal form rejects dates earlier than today,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_past_date,Passed,
+REQ-UNIT-004,4,Renewal form rejects dates beyond today plus four weeks,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_more_than_four_weeks_ahead,Passed,
+REQ-UNIT-005,4,Renewal form accepts today and four-week boundary dates,unit,tests/unit/test_forms_unit.py,test_renewal_date_accepts_today_boundary,Passed,Covered together with test_renewal_date_accepts_four_week_boundary
+REQ-UNIT-006,4,Borrow service marks available copy on loan with borrower and due date,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_success_sets_status_borrower_and_due_date,Passed,
+REQ-UNIT-007,4,Borrow service rejects unavailable copies,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_rejects_unavailable_copy,Passed,
+REQ-UNIT-008,4,Return service resets status borrower and due date for on-loan copy,unit,tests/unit/test_services_unit.py,test_return_book_copy_success_resets_loan_fields,Passed,

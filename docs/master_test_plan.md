@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.3  
+**Document version:** 1.4  
 **Last updated:** 2026-04-27  
-**Project phase:** Phase 3 — User Workflow Features  
+**Project phase:** Phase 4 — Unit Testing and Coverage Foundation  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -238,10 +238,26 @@ Features:
 
 ```bash
 pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
-  --html=reports/unit-report.html
+  --cov-report=term-missing --cov-report=html:reports/coverage-html \
+  --html=reports/unit-report.html --self-contained-html
 ```
 
-**Status:** Planned
+**Execution result (2026-04-27):**
+
+- Selected unit tests: `20 passed`, `40 deselected`
+- Coverage results:
+  - `catalog/forms.py`: **100%**
+  - `catalog/models.py`: **100%**
+  - `catalog/services.py`: **100%**
+- Generated reports:
+  - `reports/unit-report.html`
+  - `reports/coverage-html/index.html`
+
+**Evidence artefacts:**
+
+- [docs/evidence/phase-4/README.md](evidence/phase-4/README.md) — Phase 4 verification summary and report links
+
+**Status:** Complete (2026-04-28)
 
 ---
 
@@ -412,7 +428,7 @@ Requirements → test case mapping is maintained in `docs/traceability_matrix.cs
 
 ## 7. Defect management
 
-Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. No defects logged as of Phase 1.
+Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 4, one low-severity environment warning is logged (`DEF-P4-001`).
 
 ---
 
@@ -424,3 +440,4 @@ Defects discovered during testing are logged in `docs/defect_log.csv` with ID, p
 | 1.1 | 2026-04-26 | Project contributor | Phase 2 DRF API — initial endpoints (books, authors, book-instances, auth token) |
 | 1.2 | 2026-04-27 | Project contributor | Phase 2 extended — added genres, languages, stats endpoints; search/ordering filters; status filter on book-instances; updated Phase 6 scenarios; corrected URL registration bug in `locallibrary/urls.py` |
 | 1.3 | 2026-04-27 | Project contributor | Phase 3 implementation — added catalogue search, borrow and return endpoints, shared workflow service layer, and flash-message UI updates |
+| 1.4 | 2026-04-27 | Project contributor | Phase 4 implementation — configured pytest markers/fixtures, added top-level unit tests for forms/models/services, and achieved 100% target-module coverage with HTML evidence |

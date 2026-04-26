@@ -119,7 +119,43 @@ Without this, the workflow would be vulnerable to accidental or unsafe mutations
 
 ---
 
-## CH-005 — (placeholder for next challenge)
+## CH-005 — Pytest emits Django deprecation warnings on Python 3.14
+
+- **Date:** 2026-04-27
+- **Phase:** Phase 4
+- **Severity:** Low
+
+### Symptom
+
+Unit tests passed, but pytest printed repeated `DeprecationWarning` entries from Django auth decorators:
+
+```text
+DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16
+```
+
+### Root cause
+
+This warning originates in Django internals on the current local interpreter (`Python 3.14.4`), not in project test logic. Django currently calls `asyncio.iscoroutinefunction`, which now warns in Python 3.14 and is planned for removal in Python 3.16.
+
+### Investigation
+
+1. Verified warning stack traces point to `django/contrib/auth/decorators.py` inside `.venv`.
+2. Re-ran unit tests and confirmed no failing assertions or local code references to `asyncio.iscoroutinefunction`.
+3. Confirmed warning appears consistently on Python 3.14 while test outcomes remain stable.
+
+### Resolution
+
+- Logged the warning as a known environment-level issue.
+- Captured it in `docs/defect_log.csv` as `DEF-P4-001`.
+- Kept tests and fixtures unchanged because application behavior is correct.
+
+### Impact
+
+No functional impact on Phase 4 deliverables. Risk is future-facing: warning noise can hide real failures if ignored and may become a hard incompatibility if interpreter versions advance ahead of framework updates.
+
+---
+
+## CH-006 — (placeholder for next challenge)
 
 *To be completed when the next challenge arises.*
 
