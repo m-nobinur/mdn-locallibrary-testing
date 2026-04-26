@@ -1,8 +1,9 @@
+import uuid
+from datetime import date
+
 from django.db import models
-
-# Create your models here.
-
-from django.urls import reverse  # To generate URLS by reversing URL patterns
+from django.conf import settings
+from django.urls import reverse
 from django.db.models import UniqueConstraint
 from django.db.models.functions import Lower
 
@@ -16,7 +17,7 @@ class Genre(models.Model):
 
     def __str__(self):
         """String for representing the Model object (in Admin site etc.)"""
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         """Returns the url to access a particular genre instance."""
@@ -43,7 +44,7 @@ class Language(models.Model):
 
     def __str__(self):
         """String for representing the Model object (in Admin site etc.)"""
-        return self.name
+        return str(self.name)
 
     class Meta:
         constraints = [
@@ -78,7 +79,8 @@ class Book(models.Model):
 
     def display_genre(self):
         """Creates a string for the Genre. This is required to display genre in Admin."""
-        return ', '.join([genre.name for genre in self.genre.all()[:3]])
+        names = Genre.objects.filter(book=self).values_list('name', flat=True)[:3]
+        return ', '.join(names)
 
     display_genre.short_description = 'Genre'
 
@@ -88,13 +90,7 @@ class Book(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return self.title
-
-
-import uuid  # Required for unique book instances
-from datetime import date
-
-from django.conf import settings  # Required to assign User as a borrower
+        return str(self.title)
 
 
 class BookInstance(models.Model):
@@ -136,7 +132,8 @@ class BookInstance(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.book.title})'
+        book_label = self.book if self.book else 'Unknown book'
+        return f'{self.id} ({book_label})'
 
 
 class Author(models.Model):
