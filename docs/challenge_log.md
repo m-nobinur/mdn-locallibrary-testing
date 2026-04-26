@@ -66,7 +66,19 @@ Check `runtime.txt` before creating your `.venv` — if the pinned runtime diffe
 
 ---
 
-## CH-002 — (placeholder for next challenge)
+## CH-002 — Phase 2 completed without blocking challenges
+
+- **Date:** 2026-04-26
+- **Phase:** Phase 2
+- **Severity:** N/A
+
+### Summary
+
+Phase 2 DRF integration completed cleanly. No blocking issues were encountered during dependency installation, settings configuration, serializer/viewset implementation, migration, or URL resolution verification.
+
+---
+
+## CH-003 — (placeholder for next challenge)
 
 *To be completed when the next challenge arises.*
 

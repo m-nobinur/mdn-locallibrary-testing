@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.0  
+**Document version:** 1.1  
 **Last updated:** 2026-04-26  
-**Project phase:** Phase 1 — Baseline Setup  
+**Project phase:** Phase 2 — DRF API Integration  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -74,6 +74,13 @@ Key business rules worth testing:
 | `/catalog/book/<id>/renew/` | Renew loan | Librarian only |
 | `/admin/` | Django admin | Staff/superuser |
 | `/api/` | DRF browsable API | Token auth (Phase 2) |
+| `/api/books/` | Book list (read-only) | Token |
+| `/api/books/<id>/` | Book detail (read-only) | Token |
+| `/api/authors/` | Author list (read-only) | Token |
+| `/api/authors/<id>/` | Author detail (read-only) | Token |
+| `/api/book-instances/` | Book instance list (read-only) | Token |
+| `/api/book-instances/<id>/` | Book instance detail (read-only) | Token |
+| `/api/auth/token/` | Obtain auth token | Credentials (POST) |
 
 ---
 
@@ -140,9 +147,19 @@ Each level is tagged with a `pytest` marker so they can be run independently or 
 | `/api/book-instances/` | GET | Token |
 | `/api/auth/token/` | POST | Credentials |
 
-**New dependencies:** `djangorestframework`, `markdown` (browsable API)
+**New dependencies:** `djangorestframework==3.15.2` (added to `requirements-dev.txt`)
 
-**Status:** Planned
+**Implementation:**
+
+- `catalog/api/__init__.py` — API package marker
+- `catalog/api/serializers.py` — read-only serializers for `Book`, `Author`, `BookInstance`, `Genre`, `Language`
+- `catalog/api/views.py` — `ReadOnlyModelViewSet` for each resource
+- `catalog/api/urls.py` — `DefaultRouter` registering all three viewsets
+- `locallibrary/urls.py` — wired `/api/` and `/api/auth/token/`
+- `locallibrary/settings.py` — `rest_framework` and `rest_framework.authtoken` added to `INSTALLED_APPS`; `REST_FRAMEWORK` settings configured for token + session auth with `IsAuthenticated` default permission
+- Migrations run: `authtoken` tables applied cleanly
+
+**Status:** Complete (2026-04-26)
 
 ---
 
