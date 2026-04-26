@@ -3,6 +3,25 @@
 {% block content %}
     <h1>Book List</h1>
 
+    <form action="" method="get" class="mb-3">
+      <label for="book-search" class="form-label">Search by title</label>
+      <div class="input-group">
+        <input
+          id="book-search"
+          class="form-control"
+          type="text"
+          name="q"
+          value="{{ search_query }}"
+          placeholder="e.g. War and Peace"
+        >
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </form>
+
+    {% if search_query %}
+      <p>Showing matches for "{{ search_query }}".</p>
+    {% endif %}
+
     {% if book_list %}
     <ul>
 
