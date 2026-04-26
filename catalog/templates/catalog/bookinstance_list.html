@@ -9,7 +9,16 @@
         <a href="{% url 'bookinstance-detail' bookinst.pk %}">{{bookinst.book.title}}</a> ({{ bookinst.get_status_display }})
         {% if bookinst.status != 'a' %}: {{ bookinst.due_back }} {% endif %}
         {% if bookinst.status == 'o' %}
-          {% if user.is_staff %}- {{ bookinst.borrower }}{% endif %} {% if perms.catalog.can_mark_returned %}- <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a> {% endif %}
+          {% if user.is_staff %}- {{ bookinst.borrower }}{% endif %}
+          {% if perms.catalog.can_mark_returned %}
+            - <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a>
+            -
+            <form method="post" action="{% url 'return-book-librarian' bookinst.id %}" style="display:inline;">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.path }}">
+              <button type="submit" class="btn btn-link btn-sm p-0 align-baseline">Mark returned</button>
+            </form>
+          {% endif %}
         {% endif %}
       </li>
       {% empty %}
