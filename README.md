@@ -51,9 +51,11 @@ mdn-locallibrary-testing/
 
 ## Compatibility notes
 
-**Python 3.14 and psycopg2.** The local `.venv` runs Python 3.14, which is fine for Django but breaks `psycopg2-binary==2.9.9` — the C extension references `_PyInterpreterState_Get`, a private CPython symbol removed in 3.14. Since local development uses SQLite, the driver simply isn't needed here. For PostgreSQL-backed deployments on Python ≤ 3.13, use `requirements-prod.txt` instead. Full details in `docs/challenge_log.md` (CH-001).
+**Python 3.14 and psycopg2.** Python 3.14 may still be usable for local SQLite-only experimentation, but it is outside Django 5.1.x's officially supported matrix and breaks `psycopg2-binary==2.9.9` because the C extension references `_PyInterpreterState_Get`, a private CPython symbol removed in 3.14. Since the default local setup uses SQLite, the PostgreSQL driver is not required there. For PostgreSQL-backed deployments matching production, use Python 3.10 with `requirements-prod.txt`. Full details in `docs/challenge_log.md` (CH-001).
 
-Django 5.1.x officially supports Python 3.10–3.13; 3.14 works but is not yet on the supported matrix. If you prefer a pinned-stable environment, `uv venv .venv --python 3.12` is the safest option.
+`runtime.txt` currently pins production deployments to **Python 3.10.2**. To keep local development, CI, and production aligned, prefer Python 3.10 for day-to-day work unless you are intentionally testing a different interpreter.
+
+Django 5.1.x officially supports Python 3.10–3.13. If you prefer a pinned-stable environment that matches production, `uv venv .venv --python 3.10` is the safest option.
 
 ---
 
