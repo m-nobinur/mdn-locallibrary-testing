@@ -1,0 +1,6 @@
+# Production-only extras — install on top of requirements.txt
+# PostgreSQL driver for deployments.
+# Requires Python ≤ 3.13; not yet compatible with Python 3.14.
+
+-r requirements.txt
+psycopg2-binary==2.9.9; python_version < "3.14"
