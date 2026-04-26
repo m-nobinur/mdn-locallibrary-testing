@@ -1,7 +1,10 @@
+# Core runtime dependencies — works with Python 3.12+ and Python 3.14
+
 Django==5.1.15
 dj-database-url==2.1.0
-gunicorn==22.0.0
-psycopg2-binary==2.9.9
-wheel==0.46.2
 whitenoise==6.6.0
 python-dotenv==1.0.1
+
+# Production extras
+gunicorn==22.0.0
+wheel==0.46.2
