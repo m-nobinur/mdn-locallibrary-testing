@@ -1,0 +1,24 @@
+[MAIN]
+ignore=.venv
+ignore-patterns=.*migrations.*
+jobs=0
+py-version=3.10
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-few-public-methods
+
+[FORMAT]
+max-line-length=88
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,pk,id
+
+[DESIGN]
+max-args=8
+
+[TYPECHECK]
+generated-members=objects,DoesNotExist,MultipleObjectsReturned,id,pk,_meta
