@@ -1,0 +1,2 @@
+ID,Date,Phase,Severity,Title,Description,Status,Resolution
+DEF-P4-001,2026-04-27,4,Low,Django deprecation warnings on Python 3.14,Pytest unit execution emits DeprecationWarning for asyncio.iscoroutinefunction from django.contrib.auth.decorators under Python 3.14,Open,Track Django/Python compatibility updates and remove warning once upstream fix is available

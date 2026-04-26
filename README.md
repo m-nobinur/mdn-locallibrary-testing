@@ -16,11 +16,13 @@ Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Eve
 
 Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/evidence/).
 
-| Phase | Evidence |  
-| ------- | ---------- |
-| 1 — Baseline setup | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots |
-| 2 — DRF API | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification |
-| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual browser verification screenshots |
+| Phase                              | Evidence                                                                                                                                |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Baseline setup                 | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots                |
+| 2 — DRF API                        | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification        |
+| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots                                    |
+| 4 — Unit testing and coverage      | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manu screenshot evidence |
+|                                    |                                                                                                                                         |
 
 ---
 
@@ -128,8 +130,11 @@ python manage.py test
 Extended pytest suite (once Phases 4–8 are complete):
 
 ```bash
-pytest                               # all non-system tests
-RUN_SYSTEM_TESTS=1 pytest -m system  # Selenium journeys
+pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
+  --cov-report=term-missing --cov-report=html:reports/coverage-html \
+  --html=reports/unit-report.html --self-contained-html
+pytest                                 # all non-system tests
+RUN_SYSTEM_TESTS=1 pytest -m system    # Selenium journeys
 ```
 
 ---
@@ -158,7 +163,7 @@ python -m isort .
 | 1   | Baseline setup and environment       | Complete |
 | 2   | DRF REST API                         | Complete |
 | 3   | Borrow/return/search workflows       | Complete |
-| 4   | Unit tests + coverage                | Planned  |
+| 4   | Unit tests + coverage                | Complete |
 | 5   | Django client integration tests      | Planned  |
 | 6   | Requests-based API integration tests | Planned  |
 | 7   | Selenium system tests                | Planned  |
