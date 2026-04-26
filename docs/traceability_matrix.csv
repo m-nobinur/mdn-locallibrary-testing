@@ -17,3 +17,11 @@ REQ-API-015,2,GET /api/languages/ with valid token returns 200 and list payload,
 REQ-API-016,2,GET /api/languages/<id>/ with valid token returns correct language fields,integration_api,tests/integration/api/test_languages.py,test_language_detail_authenticated,Planned,
 REQ-API-017,2,GET /api/stats/ with valid token returns 200 and all expected count keys,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_authenticated,Planned,
 REQ-API-018,2,GET /api/stats/ without token returns 401,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_unauthenticated,Planned,
+REQ-WF-001,3,GET /catalog/books/?q=<term> filters books by title keyword,integration_client,tests/integration/client/test_search.py,test_book_list_search_filters_by_title,Planned,Phase 3 feature implemented
+REQ-WF-002,3,POST /catalog/bookinstance/<uuid>/borrow/ redirects unauthenticated users to login,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_requires_login,Planned,Phase 3 feature implemented
+REQ-WF-003,3,Authenticated member can borrow available copy and becomes borrower,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_available_copy_success,Planned,Phase 3 feature implemented
+REQ-WF-004,3,Borrow attempt for unavailable copy is rejected with feedback message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_unavailable_copy_fails,Planned,Phase 3 feature implemented
+REQ-WF-005,3,Only user with can_mark_returned permission can access return endpoint,integration_client,tests/integration/client/test_borrow_return.py,test_return_requires_librarian_permission,Planned,Phase 3 feature implemented
+REQ-WF-006,3,Librarian return action sets status to available and clears borrower and due date,integration_client,tests/integration/client/test_borrow_return.py,test_return_resets_loan_fields,Planned,Phase 3 feature implemented
+REQ-WF-007,3,Successful borrow action shows user-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_success_message,Planned,Phase 3 feature implemented
+REQ-WF-008,3,Successful return action shows librarian-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_return_success_message,Planned,Phase 3 feature implemented

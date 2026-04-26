@@ -2,21 +2,6 @@
 
 This log records every significant obstacle, version conflict, or unexpected behaviour encountered during the project — along with what was tried, what eventually worked, and what anyone picking up this repo should know before they waste an afternoon on the same thing.
 
-Entries follow this template:
-
-```md
-## CH-NNN — <short title>
-- **Date:** YYYY-MM-DD
-- **Phase:** Phase N
-- **Severity:** High / Medium / Low
-- **Symptom:** What went wrong or looked wrong
-- **Root cause:** Why it happened
-- **Investigation:** What was tried to understand or fix it
-- **Resolution:** What actually resolved it
-- **Impact:** What would have broken if left unresolved
-- **Lesson learned:** One-line takeaway
-```
-
 ---
 
 ## CH-001 — psycopg2-binary fails to build on Python 3.14
@@ -60,10 +45,6 @@ Removed `psycopg2-binary==2.9.9` from `requirements.txt` and documented it there
 
 Without this fix, nobody running Python 3.14 could install the project's dependencies at all — let alone run the app or write tests. The separation into `requirements.txt` / `requirements-prod.txt` also clarifies the boundary between what's needed to run the app locally and what's needed for a PostgreSQL-backed production deployment.
 
-### Lesson learned
-
-Check `runtime.txt` before creating your `.venv` — if the pinned runtime differs significantly from the host Python, use `uv venv .venv --python <version>` to align them. And always check whether a C-extension package has wheels for your CPython version before assuming `pip install` will just work.
-
 ---
 
 ## CH-002 — Phase 2 completed without blocking challenges
@@ -105,7 +86,40 @@ Pylint analyses Django model field descriptors statically. At definition time `b
 
 ---
 
-## CH-004 — (placeholder for next challenge)
+## CH-004 — Preventing unsafe state changes in borrow/return workflows
+
+- **Date:** 2026-04-27
+- **Phase:** Phase 3
+- **Severity:** Medium
+
+### Symptom
+
+The new borrow and return actions could have been implemented as plain links (`GET`) from list/detail pages, which makes testing simple but allows state changes via refreshes, crawlers, or copied URLs.
+
+### Root cause
+
+Initial template patterns in the tutorial code mostly use links, and there was no existing borrow/return workflow to enforce a safer mutation pattern.
+
+### Investigation
+
+1. Compared renewal flow and existing list templates.
+2. Reviewed where borrow/return controls would appear (book detail, borrowed list, all copies list).
+3. Evaluated URL and permission implications for member vs librarian actions.
+
+### Resolution
+
+- Added `catalog/services.py` so state transitions live in one place.
+- Implemented borrow/return as `POST` actions with CSRF protection.
+- Added safe `next` redirect handling so workflow pages can return users to the correct location without open redirects.
+- Added flash-message feedback in the base template so result of each action is explicit.
+
+### Impact
+
+Without this, the workflow would be vulnerable to accidental or unsafe mutations and harder to reason about in later integration and system tests.
+
+---
+
+## CH-005 — (placeholder for next challenge)
 
 *To be completed when the next challenge arises.*
 
