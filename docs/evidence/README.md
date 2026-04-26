@@ -7,6 +7,7 @@ This directory groups project evidence by delivery phase so screenshots, reports
 - [phase-1/README.md](phase-1/README.md) — clean start and baseline setup evidence
 - [phase-2/README.md](phase-2/README.md) — DRF API integration evidence
 - [phase-3/README.md](phase-3/README.md) — search, borrow, and return workflow evidence
+- [phase-4/README.md](phase-4/README.md) — unit testing and coverage evidence
 
 Add each later phase here using the same structure:
 
