@@ -79,11 +79,16 @@ python manage.py runserver
 | `http://127.0.0.1:8000/catalog/` | Catalogue home |
 | `http://127.0.0.1:8000/accounts/login/` | Member login |
 | `http://127.0.0.1:8000/admin/` | Django admin |
-| `http://127.0.0.1:8000/api/` | DRF browsable API |
+| `http://127.0.0.1:8000/api/` | DRF browsable API root |
 | `http://127.0.0.1:8000/api/books/` | Book list (token required) |
 | `http://127.0.0.1:8000/api/authors/` | Author list (token required) |
 | `http://127.0.0.1:8000/api/book-instances/` | Book instance list (token required) |
+| `http://127.0.0.1:8000/api/genres/` | Genre list (token required) |
+| `http://127.0.0.1:8000/api/languages/` | Language list (token required) |
+| `http://127.0.0.1:8000/api/stats/` | Catalogue statistics summary (token required) |
 | `http://127.0.0.1:8000/api/auth/token/` | Obtain auth token (POST) |
+
+All list endpoints support `?search=<term>` and `?ordering=<field>`. Book instances additionally support `?status=a|o|d|r` to filter by availability.
 
 ### Obtaining an API token
 
@@ -92,7 +97,20 @@ curl -s -X POST http://127.0.0.1:8000/api/auth/token/ \
   -d "username=<user>&password=<pass>" | python -m json.tool
 # {"token": "<your-token>"}
 
+# List all books
 curl -s http://127.0.0.1:8000/api/books/ \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Search books by title or author
+curl -s "http://127.0.0.1:8000/api/books/?search=tolkien" \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Filter book instances by availability status
+curl -s "http://127.0.0.1:8000/api/book-instances/?status=a" \
+  -H "Authorization: Token <your-token>" | python -m json.tool
+
+# Get catalogue-wide statistics
+curl -s http://127.0.0.1:8000/api/stats/ \
   -H "Authorization: Token <your-token>" | python -m json.tool
 ```
 

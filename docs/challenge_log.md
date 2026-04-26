@@ -78,7 +78,34 @@ Phase 2 DRF integration completed cleanly. No blocking issues were encountered d
 
 ---
 
-## CH-003 — (placeholder for next challenge)
+## CH-003 — Pylint E1101 false positives on Django ORM field descriptors
+
+- **Date:** 2026-04-27
+- **Phase:** Phase 2
+- **Severity:** Low
+
+### Symptom
+
+Pylint reported `E1101:no-member` on two lines in `catalog/models.py`:
+
+```md
+Instance of 'ForeignKey' has no 'title' member       (BookInstance.__str__)
+Instance of 'ManyToManyField' has no 'all' member    (Book.display_genre)
+```
+
+### Root cause
+
+Pylint analyses Django model field descriptors statically. At definition time `book` is a `ForeignKey` instance and `genre` is a `ManyToManyField` instance — neither carries the resolved related-model attributes that only exist at runtime after Django's model metaclass wiring runs. Without `django-stubs`, Pylint has no way to know that `self.book` resolves to a `Book` instance at runtime.
+
+### Resolution
+
+- `BookInstance.__str__`: replaced direct `self.book.title` access with `str(self.book)` via a safe label variable (`book_label = self.book if self.book else 'Unknown book'`), which avoids the attribute access entirely and also handles the `null=True` case correctly.
+- `Book.display_genre`: replaced `self.genre.all()[:3]` with `Genre.objects.filter(book=self).values_list('name', flat=True)[:3]`, querying via the model manager instead of the descriptor.
+- `Genre.__str__`: wrapped `return self.name` in `str()` to satisfy the strict return-type checker.
+
+---
+
+## CH-004 — (placeholder for next challenge)
 
 *To be completed when the next challenge arises.*
 
