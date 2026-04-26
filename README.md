@@ -1,39 +1,106 @@
-# Django Local Library
+# MDN LocalLibrary — Multi-Level Automated Testing Project
 
-Tutorial "Local Library" website written in Django.
+> **Attribution:** Application under test is the [Django Local Library tutorial](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Tutorial_local_library_website) by [MDN Web Docs contributors](https://developer.mozilla.org/en-US/docs/MDN/Community/Contributing), licensed [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/). Upstream repo: [mdn/django-locallibrary-tutorial](https://github.com/mdn/django-locallibrary-tutorial). Original application code belongs to its respective authors; this fork layers a structured automated-testing programme on top.
 
-For detailed information about this project see the associated [MDN tutorial home page](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Tutorial_local_library_website).
+---
 
 ## Overview
 
-This web application creates an online catalog for a small local library, where users can browse available books and manage their accounts.
+A software quality assurance study project built on MDN's Django tutorial app — a modest library catalogue that, frankly, turns out to be a pretty ideal specimen for demonstrating a full test-pyramid implementation. On top of the original Django application, this repo adds a DRF REST API, borrow/return workflows, and nine test phases ranging from isolated unit assertions up to Selenium end-to-end journeys.
 
-The main features that have currently been implemented are:
+Test strategy lives in `docs/master_test_plan.md`. Every stumble along the way is catalogued in `docs/challenge_log.md`.
 
-* There are models for books, book copies, genre, language and authors.
-* Users can view list and detail information for books and authors.
-* Admin users can create and manage models. The admin has been optimised (the basic registration is present in admin.py, but commented out).
-* Librarians can renew reserved books.
+---
 
-![Local Library Model](https://raw.githubusercontent.com/mdn/django-locallibrary-tutorial/master/catalog/static/images/local_library_model_uml.png)
+## The application
 
+LocalLibrary models a small public lending library. Unauthenticated visitors browse books and authors; authenticated members manage loan renewals; librarian-role users get full administrative control.
 
-## Quick Start
+Core entities: **Book**, **BookInstance** (individual copy, carries loan status and due-back date), **Author**, **Genre**, **Language**.
 
-To get this project up and running locally on your computer:
-1. Set up the [Python development environment](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/development_environment).
-   We recommend using a Python virtual environment.
-   > **Note:** This has been tested against Django 3.10 (and may not work or be "optimal" for other versions).
-1. Assuming you have Python setup, run the following commands (if you're on Windows you may use `py` or `py -3` instead of `python` to start Python):
-   ```
-   pip3 install -r requirements.txt
-   python3 manage.py makemigrations
-   python3 manage.py migrate
-   python3 manage.py collectstatic
-   python3 manage.py test # Run the standard tests. These should all pass.
-   python3 manage.py createsuperuser # Create a superuser
-   python3 manage.py runserver
-   ```
-1. Open a browser to `http://127.0.0.1:8000/admin/` to open the admin site
-1. Create a few test objects of each type.
-1. Open tab to `http://127.0.0.1:8000` to see the main site, with your new objects.
+![Data model UML](https://raw.githubusercontent.com/mdn/django-locallibrary-tutorial/master/catalog/static/images/local_library_model_uml.png)
+
+---
+
+## Repository layout
+
+```md
+mdn-locallibrary-testing/
+├── catalog/              # Django app — models, views, forms, URLs, templates
+├── locallibrary/         # Project settings, root URL conf, WSGI/ASGI
+├── templates/            # Project-level auth/registration templates
+├── docs/                 # Test plan, challenge log, traceability matrix, defect log
+├── requirements.txt      # Local dev dependencies (SQLite, no psycopg2)
+├── requirements-prod.txt # Adds psycopg2 for PostgreSQL deployments on Python ≤ 3.13
+├── manage.py
+└── runtime.txt           # Python version pin for production deployments
+```
+
+---
+
+## Compatibility notes
+
+**Python 3.14 and psycopg2.** The local `.venv` runs Python 3.14, which is fine for Django but breaks `psycopg2-binary==2.9.9` — the C extension references `_PyInterpreterState_Get`, a private CPython symbol removed in 3.14. Since local development uses SQLite, the driver simply isn't needed here. For PostgreSQL-backed deployments on Python ≤ 3.13, use `requirements-prod.txt` instead. Full details in `docs/challenge_log.md` (CH-001).
+
+Django 5.1.x officially supports Python 3.10–3.13; 3.14 works but is not yet on the supported matrix. If you prefer a pinned-stable environment, `uv venv .venv --python 3.12` is the safest option.
+
+---
+
+## Quick start
+
+Requires [uv](https://github.com/astral-sh/uv). Plain `pip` works too — substitute as needed.
+
+```bash
+uv venv .venv && source .venv/bin/activate
+uv pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+| URL | Page |
+|-----|------|
+| `http://127.0.0.1:8000/catalog/` | Catalogue home |
+| `http://127.0.0.1:8000/accounts/login/` | Member login |
+| `http://127.0.0.1:8000/admin/` | Django admin |
+
+---
+
+## Running tests
+
+Upstream suite (models, forms, views — basic coverage):
+
+```bash
+python manage.py test
+```
+
+Extended pytest suite (once Phases 4–8 are complete):
+
+```bash
+pytest                               # all non-system tests
+RUN_SYSTEM_TESTS=1 pytest -m system  # Selenium journeys
+```
+
+---
+
+## Testing phases
+
+| # | Scope | Status |
+|---|-------|--------|
+| 1 | Baseline setup and environment | Complete |
+| 2 | DRF REST API | Planned |
+| 3 | Borrow/return/search workflows | Planned |
+| 4 | Unit tests + coverage | Planned |
+| 5 | Django client integration tests | Planned |
+| 6 | Requests-based API integration tests | Planned |
+| 7 | Selenium system tests | Planned |
+| 8 | Consolidated coverage push | Planned |
+| 9 | Final documentation and reporting | Planned |
+
+---
+
+## Licence
+
+**Application code** (`catalog/`, `locallibrary/`) — [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/) (MDN).
+
+**Tests, documentation, and project configuration** — [MIT](LICENSE).
