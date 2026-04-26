@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.1  
-**Last updated:** 2026-04-26  
-**Project phase:** Phase 2 — DRF API Integration  
+**Document version:** 1.3  
+**Last updated:** 2026-04-27  
+**Project phase:** Phase 3 — User Workflow Features  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -35,15 +35,15 @@ The application under test is a Django-based library catalogue originally author
 
 ### 2.1 Technology stack
 
-| Component | Detail |
-|-----------|--------|
-| Language | Python 3.14 (local dev), 3.12 recommended for CI |
-| Framework | Django 5.1.15 |
-| Database (local) | SQLite 3 (file: `db.sqlite3`) |
-| Database (production) | PostgreSQL (via `dj-database-url` + `psycopg2`) |
-| Static files | WhiteNoise 6.6 |
-| REST API | Django REST Framework (Phase 2) |
-| Package manager | `uv` |
+| Component             | Detail                                           |
+| --------------------- | ------------------------------------------------ |
+| Language              | Python 3.14 (local dev), 3.12 recommended for CI |
+| Framework             | Django 5.1.15                                    |
+| Database (local)      | SQLite 3 (file: `db.sqlite3`)                    |
+| Database (production) | PostgreSQL (via `dj-database-url` + `psycopg2`)  |
+| Static files          | WhiteNoise 6.6                                   |
+| REST API              | Django REST Framework (Phase 2)                  |
+| Package manager       | `uv`                                             |
 
 ### 2.2 Data model summary
 
@@ -64,28 +64,30 @@ Key business rules worth testing:
 
 ### 2.3 Key URLs
 
-| Path | Purpose | Auth required |
-|------|---------|---------------|
-| `/catalog/` | Catalogue home | No |
-| `/catalog/books/` | Book list | No |
-| `/catalog/book/<id>/` | Book detail | No |
-| `/catalog/authors/` | Author list | No |
-| `/catalog/mybooks/` | Borrowed books | Login required |
-| `/catalog/book/<id>/renew/` | Renew loan | Librarian only |
-| `/admin/` | Django admin | Staff/superuser |
-| `/api/` | DRF browsable API root | Token auth (Phase 2) |
-| `/api/books/` | Book list — supports `?search=`, `?ordering=` | Token |
-| `/api/books/<id>/` | Book detail | Token |
-| `/api/authors/` | Author list — supports `?search=`, `?ordering=` | Token |
-| `/api/authors/<id>/` | Author detail | Token |
-| `/api/book-instances/` | Book instance list — supports `?search=`, `?status=`, `?ordering=` | Token |
-| `/api/book-instances/<id>/` | Book instance detail | Token |
-| `/api/genres/` | Genre list — supports `?search=` | Token |
-| `/api/genres/<id>/` | Genre detail | Token |
-| `/api/languages/` | Language list — supports `?search=` | Token |
-| `/api/languages/<id>/` | Language detail | Token |
-| `/api/stats/` | Catalogue summary statistics | Token |
-| `/api/auth/token/` | Obtain auth token | Credentials (POST) |
+| Path                                   | Purpose                                                            | Auth required               |
+| -------------------------------------- | ------------------------------------------------------------------ | --------------------------- |
+| `/catalog/`                            | Catalogue home                                                     | No                          |
+| `/catalog/books/`                      | Book list (+ `?q=` title search)                                   | No                          |
+| `/catalog/book/<id>/`                  | Book detail                                                        | No                          |
+| `/catalog/authors/`                    | Author list                                                        | No                          |
+| `/catalog/mybooks/`                    | Borrowed books                                                     | Login required              |
+| `/catalog/bookinstance/<uuid>/borrow/` | Borrow an available copy                                           | Login required (POST)       |
+| `/catalog/bookinstance/<uuid>/return/` | Mark borrowed copy returned                                        | Librarian permission (POST) |
+| `/catalog/book/<id>/renew/`            | Renew loan                                                         | Librarian only              |
+| `/admin/`                              | Django admin                                                       | Staff/superuser             |
+| `/api/`                                | DRF browsable API root                                             | Token auth (Phase 2)        |
+| `/api/books/`                          | Book list — supports `?search=`, `?ordering=`                      | Token                       |
+| `/api/books/<id>/`                     | Book detail                                                        | Token                       |
+| `/api/authors/`                        | Author list — supports `?search=`, `?ordering=`                    | Token                       |
+| `/api/authors/<id>/`                   | Author detail                                                      | Token                       |
+| `/api/book-instances/`                 | Book instance list — supports `?search=`, `?status=`, `?ordering=` | Token                       |
+| `/api/book-instances/<id>/`            | Book instance detail                                               | Token                       |
+| `/api/genres/`                         | Genre list — supports `?search=`                                   | Token                       |
+| `/api/genres/<id>/`                    | Genre detail                                                       | Token                       |
+| `/api/languages/`                      | Language list — supports `?search=`                                | Token                       |
+| `/api/languages/<id>/`                 | Language detail                                                    | Token                       |
+| `/api/stats/`                          | Catalogue summary statistics                                       | Token                       |
+| `/api/auth/token/`                     | Obtain auth token                                                  | Credentials (POST)          |
 
 ---
 
@@ -93,7 +95,7 @@ Key business rules worth testing:
 
 The project uses a test-pyramid approach. The bulk of coverage comes from fast unit and Django-client integration tests; a smaller number of Selenium tests cover critical end-to-end journeys.
 
-```
+```md
               ┌─────────────────┐
               │   Selenium E2E  │  ← small count, slow, brittle if overused
               ├─────────────────┤
@@ -143,20 +145,20 @@ Each level is tagged with a `pytest` marker so they can be run independently or 
 
 **Endpoints exposed:**
 
-| Endpoint | Method | Auth | Querystring support |
-|----------|--------|------|--------------------|
-| `/api/books/` | GET | Token | `?search=`, `?ordering=` |
-| `/api/books/<id>/` | GET | Token | — |
-| `/api/authors/` | GET | Token | `?search=`, `?ordering=` |
-| `/api/authors/<id>/` | GET | Token | — |
-| `/api/book-instances/` | GET | Token | `?search=`, `?status=a\|o\|d\|r`, `?ordering=` |
-| `/api/book-instances/<id>/` | GET | Token | — |
-| `/api/genres/` | GET | Token | `?search=` |
-| `/api/genres/<id>/` | GET | Token | — |
-| `/api/languages/` | GET | Token | `?search=` |
-| `/api/languages/<id>/` | GET | Token | — |
-| `/api/stats/` | GET | Token | — |
-| `/api/auth/token/` | POST | Credentials | — |
+| Endpoint                    | Method | Auth        | Querystring support                            |
+| --------------------------- | ------ | ----------- | ---------------------------------------------- |
+| `/api/books/`               | GET    | Token       | `?search=`, `?ordering=`                       |
+| `/api/books/<id>/`          | GET    | Token       | —                                              |
+| `/api/authors/`             | GET    | Token       | `?search=`, `?ordering=`                       |
+| `/api/authors/<id>/`        | GET    | Token       | —                                              |
+| `/api/book-instances/`      | GET    | Token       | `?search=`, `?status=a\|o\|d\|r`, `?ordering=` |
+| `/api/book-instances/<id>/` | GET    | Token       | —                                              |
+| `/api/genres/`              | GET    | Token       | `?search=`                                     |
+| `/api/genres/<id>/`         | GET    | Token       | —                                              |
+| `/api/languages/`           | GET    | Token       | `?search=`                                     |
+| `/api/languages/<id>/`      | GET    | Token       | —                                              |
+| `/api/stats/`               | GET    | Token       | —                                              |
+| `/api/auth/token/`          | POST   | Credentials | —                                              |
 
 **New dependencies:** `djangorestframework==3.15.2` (added to `requirements-dev.txt`)
 
@@ -186,7 +188,28 @@ Features:
 - Flash messages for borrow/return feedback
 - Service layer (`catalog/services.py`) for reusable borrowing logic
 
-**Status:** Planned
+**Implementation details:**
+
+- `catalog/services.py` added with `borrow_book_copy()` and `return_book_copy()` to centralize borrow/return business rules and avoid duplicating status transitions in view code
+- `catalog/views.py`
+  - `BookListView` now supports `?q=` title search
+  - new member borrow endpoint (`borrow_book`) with `login_required`
+  - new librarian return endpoint (`return_book_librarian`) with `login_required` + `can_mark_returned`
+  - both action endpoints now use safe `next` redirects and Django messages
+- `catalog/urls.py` now includes:
+  - `/catalog/bookinstance/<uuid>/borrow/`
+  - `/catalog/bookinstance/<uuid>/return/`
+- Templates updated:
+  - `catalog/book_list.html` search UI
+  - `catalog/book_detail.html` borrow action for available copies
+  - `catalog/bookinstance_list.html` and `catalog/bookinstance_list_borrowed_all.html` return action for librarians
+  - `base_generic.html` flash-message rendering
+
+**Evidence artefacts:**
+
+- [docs/evidence/phase-3/README.md](evidence/phase-3/README.md) — Phase 3 verification index and checklist
+
+**Status:** Complete (2026-04-27)
 
 ---
 
@@ -198,11 +221,11 @@ Features:
 
 **Coverage targets:**
 
-| Module | Target |
-|--------|--------|
-| `catalog/forms.py` | 100% |
-| `catalog/models.py` | 90%+ |
-| `catalog/services.py` | 100% |
+| Module                | Target |
+| --------------------- | ------ |
+| `catalog/forms.py`    | 100%   |
+| `catalog/models.py`   | 90%+   |
+| `catalog/services.py` | 100%   |
 
 **Key scenarios to cover:**
 
@@ -323,12 +346,12 @@ RUN_SYSTEM_TESTS=1 pytest -m system --html=reports/system-report.html
 
 **Aggregate coverage targets:**
 
-| Area | Target |
-|------|--------|
-| Core app logic | 90%+ |
+| Area             | Target  |
+| ---------------- | ------- |
+| Core app logic   | 90%+    |
 | Services and API | 95–100% |
-| Forms | 100% |
-| Views | 90%+ |
+| Forms            | 100%    |
+| Views            | 90%+    |
 
 **Run command:**
 
@@ -368,7 +391,7 @@ pytest -m "not system" \
 ### 5.1 Local development
 
 | Item | Detail |
-|------|--------|
+| ------ | -------- |
 | OS | macOS (Apple Silicon) |
 | Python | 3.14.4 (via Homebrew `python@3.14`) |
 | Virtual environment | `.venv` managed by `uv 0.11.6` |
@@ -396,7 +419,8 @@ Defects discovered during testing are logged in `docs/defect_log.csv` with ID, p
 ## 8. Revision history
 
 | Version | Date | Author | Changes |
-|---------|------|--------|---------|
+| --------- | ------ | -------- | --------- |
 | 1.0 | 2026-04-26 | Project contributor | Initial document — Phase 1 baseline |
 | 1.1 | 2026-04-26 | Project contributor | Phase 2 DRF API — initial endpoints (books, authors, book-instances, auth token) |
 | 1.2 | 2026-04-27 | Project contributor | Phase 2 extended — added genres, languages, stats endpoints; search/ordering filters; status filter on book-instances; updated Phase 6 scenarios; corrected URL registration bug in `locallibrary/urls.py` |
+| 1.3 | 2026-04-27 | Project contributor | Phase 3 implementation — added catalogue search, borrow and return endpoints, shared workflow service layer, and flash-message UI updates |

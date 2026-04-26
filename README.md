@@ -17,9 +17,10 @@ Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Eve
 Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/evidence/).
 
 | Phase | Evidence |  
-|-------|----------|
+| ------- | ---------- |
 | 1 — Baseline setup | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots |
 | 2 — DRF API | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification |
+| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual browser verification screenshots |
 
 ---
 
@@ -75,7 +76,7 @@ python manage.py runserver
 ```
 
 | URL | Page |
-|-----|------|
+| ----- | ------ |
 | `http://127.0.0.1:8000/catalog/` | Catalogue home |
 | `http://127.0.0.1:8000/accounts/login/` | Member login |
 | `http://127.0.0.1:8000/admin/` | Django admin |
@@ -152,17 +153,17 @@ python -m isort .
 
 ## Testing phases
 
-| # | Scope | Status |
-|---|-------|--------|
-| 1 | Baseline setup and environment | Complete |
-| 2 | DRF REST API | Complete |
-| 3 | Borrow/return/search workflows | Planned |
-| 4 | Unit tests + coverage | Planned |
-| 5 | Django client integration tests | Planned |
-| 6 | Requests-based API integration tests | Planned |
-| 7 | Selenium system tests | Planned |
-| 8 | Consolidated coverage push | Planned |
-| 9 | Final documentation and reporting | Planned |
+| #   | Scope                                | Status   |
+| --- | ------------------------------------ | -------- |
+| 1   | Baseline setup and environment       | Complete |
+| 2   | DRF REST API                         | Complete |
+| 3   | Borrow/return/search workflows       | Complete |
+| 4   | Unit tests + coverage                | Planned  |
+| 5   | Django client integration tests      | Planned  |
+| 6   | Requests-based API integration tests | Planned  |
+| 7   | Selenium system tests                | Planned  |
+| 8   | Consolidated coverage push           | Planned  |
+| 9   | Final documentation and reporting    | Planned  |
 
 ---
 
