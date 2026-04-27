@@ -16,13 +16,13 @@ Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Eve
 
 Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/evidence/).
 
-| Phase                              | Evidence                                                                                                                                |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Baseline setup                 | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots                |
-| 2 — DRF API                        | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification        |
-| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots                                    |
-| 4 — Unit testing and coverage      | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manu screenshot evidence |
-|                                    |                                                                                                                                         |
+| Phase                              | Evidence                                                                                                                                  |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Baseline setup                 | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots                  |
+| 2 — DRF API                        | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification          |
+| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots                                      |
+| 4 — Unit testing and coverage      | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manual screenshot evidence |
+|                                    |                                                                                                                                           |
 
 ---
 
