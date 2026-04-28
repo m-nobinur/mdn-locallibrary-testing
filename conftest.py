@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import client as django_test_client
 
 
@@ -120,4 +121,28 @@ def fixture_loaned_book_instance(catalog_book, member_user):
         status="o",
         borrower=member_user,
         due_back=datetime.date.today() + datetime.timedelta(days=7),
+    )
+
+
+@pytest.fixture(name="librarian_user")
+def fixture_librarian_user():
+    """User with the can_mark_returned permission (librarian role)."""
+    user_model = get_user_model()
+    user = user_model.objects.create_user(
+        username="librarian-user",
+        password=DEFAULT_PASSWORD,
+    )
+    permission = Permission.objects.get(codename="can_mark_returned")
+    user.user_permissions.add(permission)
+    return user
+
+
+@pytest.fixture(name="editor_user")
+def fixture_editor_user():
+    """Superuser with all permissions (content editor role)."""
+    user_model = get_user_model()
+    return user_model.objects.create_superuser(
+        username="editor-user",
+        password=DEFAULT_PASSWORD,
+        email="editor@test.local",
     )
