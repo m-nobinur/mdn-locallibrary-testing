@@ -16,13 +16,13 @@ Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Eve
 
 Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/evidence/).
 
-| Phase                              | Evidence                                                                                                                                  |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Baseline setup                 | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots                  |
-| 2 — DRF API                        | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification          |
-| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots                                      |
-| 4 — Unit testing and coverage      | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manual screenshot evidence |
-|                                    |                                                                                                                                           |
+| Phase | Evidence |
+| --- | --- |
+| 1 — Baseline setup | [docs/evidence/phase-1/README.md](docs/evidence/phase-1/README.md) — home page, admin dashboard, GitHub repo screenshots |
+| 2 — DRF API | [docs/evidence/phase-2/README.md](docs/evidence/phase-2/README.md) — migration output, URL resolution, system check verification |
+| 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots |
+| 4 — Unit testing and coverage | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manual screenshot evidence |
+| 5 — Django client integration tests | [docs/evidence/phase-5/README.md](docs/evidence/phase-5/README.md) — streamlined 30-test suite, catalog/views.py 100% coverage, HTML test report and coverage screenshots |
 
 ---
 
@@ -174,7 +174,7 @@ python -m isort .
 | 2   | DRF REST API                         | Complete |
 | 3   | Borrow/return/search workflows       | Complete |
 | 4   | Unit tests + coverage                | Complete |
-| 5   | Django client integration tests      | Planned  |
+| 5   | Django client integration tests      | Complete |
 | 6   | Requests-based API integration tests | Planned  |
 | 7   | Selenium system tests                | Planned  |
 | 8   | Consolidated coverage push           | Planned  |

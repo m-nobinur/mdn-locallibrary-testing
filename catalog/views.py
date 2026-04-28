@@ -3,6 +3,7 @@ import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.db.models.deletion import RestrictedError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
@@ -18,19 +19,15 @@ from .services import BorrowWorkflowError, borrow_book_copy, return_book_copy
 
 def index(request):
     """View function for home page of site."""
-    # Generate counts of some of the main objects
-    num_books = Book.objects.all().count()
-    num_instances = BookInstance.objects.all().count()
-    # Available copies of books
+    num_books = Book.objects.count()
+    num_instances = BookInstance.objects.count()
     num_instances_available = BookInstance.objects.filter(status__exact="a").count()
-    num_authors = Author.objects.count()  # The 'all()' is implied by default.
+    num_authors = Author.objects.count()
 
-    # Number of visits to this view, as counted in the session variable.
     num_visits = request.session.get("num_visits", 0)
     num_visits += 1
     request.session["num_visits"] = num_visits
 
-    # Render the HTML template index.html with the data in the context variable.
     return render(
         request,
         "index.html",
@@ -94,18 +91,24 @@ class GenreListView(generic.ListView):
     model = Genre
     paginate_by = 10
 
+    def get_queryset(self):
+        return Genre.objects.order_by("name")
+
 
 class LanguageDetailView(generic.DetailView):
-    """Generic class-based detail view for a genre."""
+    """Generic class-based detail view for a language."""
 
     model = Language
 
 
 class LanguageListView(generic.ListView):
-    """Generic class-based list view for a list of genres."""
+    """Generic class-based list view for a list of languages."""
 
     model = Language
     paginate_by = 10
+
+    def get_queryset(self):
+        return Language.objects.order_by("name")
 
 
 class BookInstanceListView(generic.ListView):
@@ -169,20 +172,13 @@ def renew_book_librarian(request, pk):
     """View function for renewing a specific BookInstance by librarian."""
     book_instance = get_object_or_404(BookInstance, pk=pk)
 
-    # If this is a POST request then process the Form data
     if request.method == "POST":
-
-        # Create a form instance and populate it with data from the request (binding):
         form = RenewBookForm(request.POST)
 
         if form.is_valid():
             book_instance.due_back = form.cleaned_data["renewal_date"]
             book_instance.save()
-
-            # redirect to a new URL:
             return HttpResponseRedirect(reverse("all-borrowed"))
-
-    # If this is a GET (or any other method) create the default form
     else:
         proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
         form = RenewBookForm(initial={"renewal_date": proposed_renewal_date})
@@ -252,7 +248,6 @@ class AuthorCreate(PermissionRequiredMixin, CreateView):
 
 class AuthorUpdate(PermissionRequiredMixin, UpdateView):
     model = Author
-    # Not recommended (potential security issue if more fields added)
     fields = "__all__"
     permission_required = "catalog.change_author"
 
@@ -264,10 +259,9 @@ class AuthorDelete(PermissionRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         try:
-            self.object.delete()
-            return HttpResponseRedirect(self.success_url)
-        except Exception as e:
-            messages.error(self.request, str(e))
+            return super().form_valid(form)
+        except RestrictedError as exc:
+            messages.error(self.request, str(exc))
             return HttpResponseRedirect(
                 reverse("author-delete", kwargs={"pk": self.object.pk})
             )
@@ -292,10 +286,9 @@ class BookDelete(PermissionRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         try:
-            self.object.delete()
-            return HttpResponseRedirect(self.success_url)
-        except Exception as e:
-            messages.error(self.request, str(e))
+            return super().form_valid(form)
+        except RestrictedError as exc:
+            messages.error(self.request, str(exc))
             return HttpResponseRedirect(
                 reverse("book-delete", kwargs={"pk": self.object.pk})
             )
@@ -353,7 +346,6 @@ class BookInstanceCreate(PermissionRequiredMixin, CreateView):
 
 class BookInstanceUpdate(PermissionRequiredMixin, UpdateView):
     model = BookInstance
-    # fields = "__all__"
     fields = ["imprint", "due_back", "borrower", "status"]
     permission_required = "catalog.change_bookinstance"
 

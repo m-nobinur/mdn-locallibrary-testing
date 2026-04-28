@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.4  
-**Last updated:** 2026-04-27  
-**Project phase:** Phase 4 — Unit Testing and Coverage Foundation  
+**Document version:** 1.5  
+**Last updated:** 2026-04-28  
+**Project phase:** Phase 5 — Django Client Integration Tests  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -277,16 +277,41 @@ pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
 - Borrow fails gracefully when no copies are available
 - Non-librarian cannot access return endpoint (403)
 - Librarian successfully marks copy returned
+- Return of already-available copy triggers `BorrowWorkflowError` (exception path)
 - Renewal form rejects date < today and date > today + 4 weeks
-- Renewal form accepts valid date
+- Renewal form accepts valid date and updates due_back
+- Public list/detail views render for key catalog entities
+- Delete views blocked by related objects (RestrictedError)
+- Index session visit counter increments on repeated visits
+
+**Test files:**
+
+| File | Tests |
+| ----- | ----- |
+| `tests/integration/client/test_search.py` | 4 |
+| `tests/integration/client/test_book_detail.py` | 4 |
+| `tests/integration/client/test_borrow_return.py` | 16 |
+| `tests/integration/client/test_general_views.py` | 6 |
+| **Total** | **30** |
 
 **Run command:**
 
 ```bash
-pytest -m integration_client --html=reports/integration-client-report.html
+pytest -m integration_client \
+  --cov=catalog.views \
+  --cov-report=html:reports/coverage-integration-html \
+  --html=reports/integration-client-report.html \
+  --self-contained-html
 ```
 
-**Status:** Planned
+**Coverage achieved:** `catalog/views.py` — **100%** (194 statements, 0 missing)
+
+**Evidence:**
+
+- `docs/evidence/phase-5/integration-client-report.png`
+- `docs/evidence/phase-5/coverage-integration-summary.png`
+
+**Status:** ✅ Complete — 30 passed, 0 failures, 100% views.py coverage
 
 ---
 

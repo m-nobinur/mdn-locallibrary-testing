@@ -1,8 +1,6 @@
-# Phase 2 Evidence — DRF REST API Integration
+# Phase 2 Evidence - DRF REST API Integration
 
-This folder contains the verification evidence for Phase 2 of the project, covering the Django REST Framework API layer added on top of the MDN LocalLibrary application.
-
-## What this phase proves
+## Result summary
 
 - `djangorestframework==3.15.2` installed cleanly from `requirements-dev.txt`
 - `rest_framework` and `rest_framework.authtoken` added to `INSTALLED_APPS`
@@ -19,7 +17,7 @@ This folder contains the verification evidence for Phase 2 of the project, cover
 ## New files added
 
 | File | Purpose |
-|------|---------|
+| ----- | ----- |
 | `requirements-dev.txt` | DRF and test tooling dependencies, separate from the runtime |
 | `catalog/api/__init__.py` | Package marker |
 | `catalog/api/serializers.py` | Read-only serializers for `Book`, `Author`, `BookInstance`, `Genre`, `Language` |
@@ -58,7 +56,7 @@ path('api/auth/token/', obtain_auth_token, name='api-token-auth'),
 ## API surface
 
 | Endpoint | Method | Querystring support |
-|----------|--------|---------------------|
+| ----- | ----- | ----- |
 | `/api/books/` | GET | `?search=`, `?ordering=` |
 | `/api/books/<id>/` | GET | — |
 | `/api/authors/` | GET | `?search=`, `?ordering=` |
