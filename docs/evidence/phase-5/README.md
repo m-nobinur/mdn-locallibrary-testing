@@ -33,7 +33,7 @@
 - [coverage-integration-summary.png](coverage-integration-summary.png) - Coverage HTML summary view (`catalog/views.py` at `100%`)
 - [integration-client-report.png](integration-client-report.png) - Pytest HTML integration report overview
 - [Integration report (HTML)](../../../reports/integration-client-report.html)
-- [Coverage report (HTML)](../../../reports/coverage-integration-html/index.html)
+- Coverage report (HTML) is generated locally by the command above at `reports/coverage-integration-html/index.html`
 
 ## Coverage report view
 
