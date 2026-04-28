@@ -29,21 +29,21 @@ REQ-WF-015,5,Index view increments session visit counter,integration_client,test
 REQ-WF-016,5,Public catalog list/detail routes return 200 for seeded entities,integration_client,tests/integration/client/test_general_views.py,test_public_catalog_views_return_success,Passed,
 REQ-WF-017,5,Book delete blocked when related BookInstance exists,integration_client,tests/integration/client/test_general_views.py,test_book_delete_with_related_instances_redirects_back_to_delete,Passed,Exception path coverage
 REQ-WF-018,5,Author delete blocked when related Book exists,integration_client,tests/integration/client/test_general_views.py,test_author_delete_with_related_books_redirects_back_to_delete,Passed,Exception path coverage
-REQ-API-001,2,POST /api/auth/token/ with valid credentials returns 200 and token,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_valid_credentials,Planned,
-REQ-API-002,2,POST /api/auth/token/ with invalid credentials returns 400,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_invalid_credentials,Planned,
-REQ-API-003,2,GET /api/books/ without token returns 401,integration_api,tests/integration/api/test_books.py,test_books_list_unauthenticated,Planned,
-REQ-API-004,2,GET /api/books/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_books.py,test_books_list_authenticated,Planned,
-REQ-API-005,2,GET /api/books/<id>/ with valid token returns correct book fields,integration_api,tests/integration/api/test_books.py,test_book_detail_authenticated,Planned,
-REQ-API-006,2,GET /api/books/<id>/ for non-existent id returns 404,integration_api,tests/integration/api/test_books.py,test_book_detail_not_found,Planned,
-REQ-API-007,2,GET /api/books/?search=<term> returns filtered results,integration_api,tests/integration/api/test_books.py,test_books_search_filter,Planned,
-REQ-API-008,2,GET /api/authors/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_authors.py,test_authors_list_authenticated,Planned,
-REQ-API-009,2,GET /api/authors/<id>/ with valid token returns correct author fields,integration_api,tests/integration/api/test_authors.py,test_author_detail_authenticated,Planned,
-REQ-API-010,2,GET /api/book-instances/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_book_instances.py,test_book_instances_list_authenticated,Planned,
-REQ-API-011,2,GET /api/book-instances/<id>/ with valid token returns correct fields including is_overdue,integration_api,tests/integration/api/test_book_instances.py,test_book_instance_detail_authenticated,Planned,
-REQ-API-012,2,GET /api/book-instances/?status=a returns only available instances,integration_api,tests/integration/api/test_book_instances.py,test_book_instances_status_filter,Planned,
-REQ-API-013,2,GET /api/genres/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_genres.py,test_genres_list_authenticated,Planned,
-REQ-API-014,2,GET /api/genres/<id>/ with valid token returns correct genre fields,integration_api,tests/integration/api/test_genres.py,test_genre_detail_authenticated,Planned,
-REQ-API-015,2,GET /api/languages/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_languages.py,test_languages_list_authenticated,Planned,
-REQ-API-016,2,GET /api/languages/<id>/ with valid token returns correct language fields,integration_api,tests/integration/api/test_languages.py,test_language_detail_authenticated,Planned,
-REQ-API-017,2,GET /api/stats/ with valid token returns 200 and all expected count keys,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_authenticated,Planned,
-REQ-API-018,2,GET /api/stats/ without token returns 401,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_unauthenticated,Planned,
+REQ-API-001,2,POST /api/auth/token/ with valid credentials returns 200 and token,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_valid_credentials,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-002,2,POST /api/auth/token/ with invalid credentials returns 400,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_invalid_credentials,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-003,2,GET /api/books/ without token returns 401,integration_api,tests/integration/api/test_books.py,test_books_list_unauthenticated,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-004,2,GET /api/books/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_books.py,test_books_list_authenticated,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-005,2,GET /api/books/<id>/ with valid token returns correct book fields,integration_api,tests/integration/api/test_books.py,test_book_detail_authenticated,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-006,2,GET /api/books/<id>/ for non-existent id returns 404,integration_api,tests/integration/api/test_books.py,test_book_detail_not_found,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-007,2,GET /api/books/?search=<term> returns filtered results,integration_api,tests/integration/api/test_books.py,test_books_search_filter,Passed,Executed in final validation (2026-04-28)
+REQ-API-008,2,GET /api/authors/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_authors.py,test_authors_list_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-009,2,GET /api/authors/<id>/ with valid token returns correct author fields,integration_api,tests/integration/api/test_authors.py,test_author_detail_authenticated,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-010,2,GET /api/book-instances/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_book_instances.py,test_book_instances_list_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-011,2,GET /api/book-instances/<id>/ with valid token returns correct fields including is_overdue,integration_api,tests/integration/api/test_book_instances.py,test_book_instance_detail_authenticated,Passed,Executed in Phase 6 (2026-04-28)
+REQ-API-012,2,GET /api/book-instances/?status=a returns only available instances,integration_api,tests/integration/api/test_book_instances.py,test_book_instances_status_filter,Passed,Executed in final validation (2026-04-28)
+REQ-API-013,2,GET /api/genres/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_genres.py,test_genres_list_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-014,2,GET /api/genres/<id>/ with valid token returns correct genre fields,integration_api,tests/integration/api/test_genres.py,test_genre_detail_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-015,2,GET /api/languages/ with valid token returns 200 and list payload,integration_api,tests/integration/api/test_languages.py,test_languages_list_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-016,2,GET /api/languages/<id>/ with valid token returns correct language fields,integration_api,tests/integration/api/test_languages.py,test_language_detail_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-017,2,GET /api/stats/ with valid token returns 200 and all expected count keys,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_authenticated,Passed,Executed in final validation (2026-04-28)
+REQ-API-018,2,GET /api/stats/ without token returns 401,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_unauthenticated,Passed,Executed in final validation (2026-04-28)

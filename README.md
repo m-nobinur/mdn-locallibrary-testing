@@ -23,6 +23,7 @@ Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/e
 | 3 — Search/borrow/return workflows | [docs/evidence/phase-3/README.md](docs/evidence/phase-3/README.md) — manual verification screenshots |
 | 4 — Unit testing and coverage | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manual screenshot evidence |
 | 5 — Django client integration tests | [docs/evidence/phase-5/README.md](docs/evidence/phase-5/README.md) — streamlined 30-test suite, catalog/views.py 100% coverage, HTML test report and coverage screenshots |
+| 6 — Requests-based API integration tests | [docs/evidence/phase-6/README.md](docs/evidence/phase-6/README.md) — 18 HTTP API integration tests across token/books/authors/book-instances/genres/languages/stats with 100% `catalog.api` coverage |
 
 ---
 
@@ -175,7 +176,7 @@ python -m isort .
 | 3   | Borrow/return/search workflows       | Complete |
 | 4   | Unit tests + coverage                | Complete |
 | 5   | Django client integration tests      | Complete |
-| 6   | Requests-based API integration tests | Planned  |
+| 6   | Requests-based API integration tests | Complete |
 | 7   | Selenium system tests                | Planned  |
 | 8   | Consolidated coverage push           | Planned  |
 | 9   | Final documentation and reporting    | Planned  |

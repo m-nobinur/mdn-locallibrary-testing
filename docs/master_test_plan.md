@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.5  
+**Document version:** 1.6  
 **Last updated:** 2026-04-28  
-**Project phase:** Phase 5 — Django Client Integration Tests  
+**Project phase:** Phase 6 — Requests-Based API Integration Tests  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -336,16 +336,42 @@ pytest -m integration_client \
 - GET `/api/book-instances/?status=a` → 200 + only available instances
 - GET `/api/book-instances/<id>/` → 200 + correct fields including `is_overdue`
 - GET `/api/genres/` with valid token → 200 + list payload
+- GET `/api/genres/<id>/` → 200 + correct fields
 - GET `/api/languages/` with valid token → 200 + list payload
+- GET `/api/languages/<id>/` → 200 + correct fields
 - GET `/api/stats/` with valid token → 200 + expected count keys present
+- GET `/api/stats/` without token → 401
 
 **Run command:**
 
 ```bash
-pytest -m integration_api --html=reports/integration-api-report.html
+pytest -m integration_api --html=reports/integration-api-report.html --self-contained-html
 ```
 
-**Status:** Planned
+**Coverage command:**
+
+```bash
+pytest -m integration_api --cov=catalog.api --cov-report=term-missing --cov-report=html:reports/coverage-integration-api-html
+```
+
+**Execution result (2026-04-28):**
+
+- Selected integration_api tests: `18 passed`, `0 failures`, `0 skipped`
+- API coverage results:
+  - `catalog/api/serializers.py`: **100%**
+  - `catalog/api/urls.py`: **100%**
+  - `catalog/api/views.py`: **100%**
+  - `catalog/api` total: **100%**
+
+**Evidence artefacts:**
+
+- `docs/evidence/phase-6/README.md`
+- `docs/evidence/phase-6/integration-api-report.png`
+- `docs/evidence/phase-6/coverage-integration-api-summary.png`
+- `reports/integration-api-report.html`
+- `reports/coverage-integration-api-html/index.html`
+
+**Status:** ✅ Complete — Requests-based API integration baseline delivered
 
 ---
 
