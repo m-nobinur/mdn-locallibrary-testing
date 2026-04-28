@@ -1,4 +1,34 @@
 ID,Phase,Requirement,Test Type,Test File,Test Name,Status,Notes
+REQ-UNIT-001,4,BookInstance.is_overdue returns True when due_back is in the past,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_true_for_past_date,Passed,
+REQ-UNIT-002,4,BookInstance.is_overdue returns False when due_back is today or null,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_false_for_today_and_none,Passed,
+REQ-UNIT-003,4,Renewal form rejects dates earlier than today,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_past_date,Passed,
+REQ-UNIT-004,4,Renewal form rejects dates beyond today plus four weeks,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_more_than_four_weeks_ahead,Passed,
+REQ-UNIT-005,4,Renewal form accepts today and four-week boundary dates,unit,tests/unit/test_forms_unit.py,test_renewal_date_accepts_today_boundary,Passed,Covered together with test_renewal_date_accepts_four_week_boundary
+REQ-UNIT-006,4,Borrow service marks available copy on loan with borrower and due date,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_success_sets_status_borrower_and_due_date,Passed,
+REQ-UNIT-007,4,Borrow service rejects unavailable copies,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_rejects_unavailable_copy,Passed,
+REQ-UNIT-008,4,Return service resets status borrower and due date for on-loan copy,unit,tests/unit/test_services_unit.py,test_return_book_copy_success_resets_loan_fields,Passed,
+REQ-WF-001,5,GET /catalog/books/?q=<term> filters books by title keyword,integration_client,tests/integration/client/test_search.py,test_book_list_search_filters_case_insensitively,Passed,Phase 5 streamlined suite
+REQ-WF-001a,5,Book list returns all books when no query is supplied,integration_client,tests/integration/client/test_search.py,test_book_list_without_query_returns_all_books,Passed,
+REQ-WF-001b,5,Search with no matches renders empty-state message,integration_client,tests/integration/client/test_search.py,test_book_list_search_no_match_shows_empty_state,Passed,
+REQ-WF-002,5,POST /catalog/bookinstance/<uuid>/borrow/ redirects unauthenticated users to login,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_requires_login,Passed,
+REQ-WF-003,5,Authenticated member can borrow available copy and becomes borrower,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_success_sets_loan_fields_and_message,Passed,
+REQ-WF-004,5,Borrow attempt for unavailable copy is rejected with feedback message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_unavailable_copy_shows_error_and_keeps_state,Passed,
+REQ-WF-005,5,Only user with can_mark_returned permission can access return endpoint,integration_client,tests/integration/client/test_borrow_return.py,test_return_requires_librarian_permission,Passed,
+REQ-WF-006,5,Librarian return action sets status to available and clears borrower and due date,integration_client,tests/integration/client/test_borrow_return.py,test_return_success_resets_fields_and_message,Passed,
+REQ-WF-007,5,Successful borrow action shows user-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_success_sets_loan_fields_and_message,Passed,
+REQ-WF-008,5,Successful return action shows librarian-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_return_success_resets_fields_and_message,Passed,
+REQ-WF-008a,5,Return already-available copy triggers BorrowWorkflowError and shows error message,integration_client,tests/integration/client/test_borrow_return.py,test_return_already_available_copy_shows_specific_error,Passed,Exception path coverage
+REQ-WF-008b,5,Borrow safe local next redirect is honoured and unsafe external redirect is rejected,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_next_redirect_safety,Passed,Parameterized safe/unsafe coverage
+REQ-WF-009,5,My Borrowed page requires login and shows current user loans,integration_client,tests/integration/client/test_borrow_return.py,test_my_borrowed_requires_login_and_lists_member_loans,Passed,
+REQ-WF-010,5,All Borrowed page is forbidden to members and accessible to librarians,integration_client,tests/integration/client/test_borrow_return.py,test_all_borrowed_permission_and_librarian_access,Passed,
+REQ-WF-011,5,Renewal form renders for librarian with default date 3 weeks ahead,integration_client,tests/integration/client/test_borrow_return.py,test_renewal_get_prefills_default_date_for_librarian,Passed,
+REQ-WF-012,5,Renewal rejects past date and far-future date,integration_client,tests/integration/client/test_borrow_return.py,test_renewal_invalid_date_rejected,Passed,
+REQ-WF-013,5,Renewal valid date updates due_back and redirects to all-borrowed,integration_client,tests/integration/client/test_borrow_return.py,test_renewal_valid_date_updates_due_back_and_redirects,Passed,
+REQ-WF-014,5,Book detail returns 200 and renders core metadata,integration_client,tests/integration/client/test_book_detail.py,test_book_detail_renders_core_fields,Passed,
+REQ-WF-015,5,Index view increments session visit counter,integration_client,tests/integration/client/test_general_views.py,test_index_displays_counts_and_increments_visit_counter,Passed,
+REQ-WF-016,5,Public catalog list/detail routes return 200 for seeded entities,integration_client,tests/integration/client/test_general_views.py,test_public_catalog_views_return_success,Passed,
+REQ-WF-017,5,Book delete blocked when related BookInstance exists,integration_client,tests/integration/client/test_general_views.py,test_book_delete_with_related_instances_redirects_back_to_delete,Passed,Exception path coverage
+REQ-WF-018,5,Author delete blocked when related Book exists,integration_client,tests/integration/client/test_general_views.py,test_author_delete_with_related_books_redirects_back_to_delete,Passed,Exception path coverage
 REQ-API-001,2,POST /api/auth/token/ with valid credentials returns 200 and token,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_valid_credentials,Planned,
 REQ-API-002,2,POST /api/auth/token/ with invalid credentials returns 400,integration_api,tests/integration/api/test_token_auth.py,test_obtain_token_with_invalid_credentials,Planned,
 REQ-API-003,2,GET /api/books/ without token returns 401,integration_api,tests/integration/api/test_books.py,test_books_list_unauthenticated,Planned,
@@ -17,19 +47,3 @@ REQ-API-015,2,GET /api/languages/ with valid token returns 200 and list payload,
 REQ-API-016,2,GET /api/languages/<id>/ with valid token returns correct language fields,integration_api,tests/integration/api/test_languages.py,test_language_detail_authenticated,Planned,
 REQ-API-017,2,GET /api/stats/ with valid token returns 200 and all expected count keys,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_authenticated,Planned,
 REQ-API-018,2,GET /api/stats/ without token returns 401,integration_api,tests/integration/api/test_stats.py,test_catalog_stats_unauthenticated,Planned,
-REQ-WF-001,3,GET /catalog/books/?q=<term> filters books by title keyword,integration_client,tests/integration/client/test_search.py,test_book_list_search_filters_by_title,Planned,Phase 3 feature implemented
-REQ-WF-002,3,POST /catalog/bookinstance/<uuid>/borrow/ redirects unauthenticated users to login,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_requires_login,Planned,Phase 3 feature implemented
-REQ-WF-003,3,Authenticated member can borrow available copy and becomes borrower,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_available_copy_success,Planned,Phase 3 feature implemented
-REQ-WF-004,3,Borrow attempt for unavailable copy is rejected with feedback message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_unavailable_copy_fails,Planned,Phase 3 feature implemented
-REQ-WF-005,3,Only user with can_mark_returned permission can access return endpoint,integration_client,tests/integration/client/test_borrow_return.py,test_return_requires_librarian_permission,Planned,Phase 3 feature implemented
-REQ-WF-006,3,Librarian return action sets status to available and clears borrower and due date,integration_client,tests/integration/client/test_borrow_return.py,test_return_resets_loan_fields,Planned,Phase 3 feature implemented
-REQ-WF-007,3,Successful borrow action shows user-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_borrow_success_message,Planned,Phase 3 feature implemented
-REQ-WF-008,3,Successful return action shows librarian-facing flash message,integration_client,tests/integration/client/test_borrow_return.py,test_return_success_message,Planned,Phase 3 feature implemented
-REQ-UNIT-001,4,BookInstance.is_overdue returns True when due_back is in the past,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_true_for_past_date,Passed,
-REQ-UNIT-002,4,BookInstance.is_overdue returns False when due_back is today or null,unit,tests/unit/test_models_unit.py,test_book_instance_is_overdue_false_for_today_and_none,Passed,
-REQ-UNIT-003,4,Renewal form rejects dates earlier than today,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_past_date,Passed,
-REQ-UNIT-004,4,Renewal form rejects dates beyond today plus four weeks,unit,tests/unit/test_forms_unit.py,test_renewal_date_rejects_more_than_four_weeks_ahead,Passed,
-REQ-UNIT-005,4,Renewal form accepts today and four-week boundary dates,unit,tests/unit/test_forms_unit.py,test_renewal_date_accepts_today_boundary,Passed,Covered together with test_renewal_date_accepts_four_week_boundary
-REQ-UNIT-006,4,Borrow service marks available copy on loan with borrower and due date,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_success_sets_status_borrower_and_due_date,Passed,
-REQ-UNIT-007,4,Borrow service rejects unavailable copies,unit,tests/unit/test_services_unit.py,test_borrow_book_copy_rejects_unavailable_copy,Passed,
-REQ-UNIT-008,4,Return service resets status borrower and due date for on-loan copy,unit,tests/unit/test_services_unit.py,test_return_book_copy_success_resets_loan_fields,Passed,

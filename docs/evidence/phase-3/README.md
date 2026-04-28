@@ -1,10 +1,8 @@
-# Phase 3 Evidence — Search, Borrow, and Return Workflows
+# Phase 3 Evidence - Search, Borrow, and Return Workflows
 
-This folder contains verification evidence for the Phase 3 workflow features added on top of the MDN LocalLibrary baseline.
+## Result summary
 
-## What this phase proves
-
-- Book list now supports title search via `?q=`
+- Book list supports title search via `?q=`
 - Authenticated members can borrow an available `BookInstance`
 - Librarians can mark borrowed copies as returned
 - Borrow and return actions are implemented as `POST` operations with CSRF protection
@@ -37,12 +35,30 @@ This folder contains verification evidence for the Phase 3 workflow features add
 - [x] Log in as librarian and mark borrowed copy as returned from `/catalog/borrowed/`
 - [x] Confirm success/error flash messages appear for borrow and return actions
 
-## Screenshot evidence
+## Evidence files
 
-| Screenshot                                                   | What it shows                                  |
-| ------------------------------------------------------------ | ---------------------------------------------- |
-| [search-results.png](search-results.png)                     | Search results for the Phase 3 test title      |
-| [member-borrow-success.png](member-borrow-success.png)       | Successful member borrow action                |
-| [my-borrowed-list.png](my-borrowed-list.png)                 | Borrowed title visible in member borrowed list |
-| [librarian-return-success.png](librarian-return-success.png) | Successful librarian return action             |
-| [flash-message-feedback.png](flash-message-feedback.png)     | Flash-message feedback after workflow actions  |
+- [search-results.png](search-results.png) - Search results for the Phase 3 test title
+- [member-borrow-success.png](member-borrow-success.png) - Successful member borrow action
+- [my-borrowed-list.png](my-borrowed-list.png) - Borrowed title visible in member borrowed list
+- [librarian-return-success.png](librarian-return-success.png) - Successful librarian return action
+- [flash-message-feedback.png](flash-message-feedback.png) - Flash-message feedback after workflow actions
+
+## Search results view
+
+![Phase 3 search results evidence](search-results.png)
+
+## Member borrow success view
+
+![Phase 3 member borrow success evidence](member-borrow-success.png)
+
+## My borrowed list view
+
+![Phase 3 my borrowed list evidence](my-borrowed-list.png)
+
+## Librarian return success view
+
+![Phase 3 librarian return success evidence](librarian-return-success.png)
+
+## Flash-message feedback view
+
+![Phase 3 flash-message feedback evidence](flash-message-feedback.png)

@@ -345,3 +345,47 @@ Both test runners now pass on Python 3.14 in local development:
 This removes runner-specific confusion and aligns quick smoke checks with the extended pytest workflow.
 
 ---
+
+## CH-011 — Exception-path lines in views.py initially missed by coverage
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 5 (Django Client Integration Testing)
+
+### Context
+
+During the initial broad Phase 5 integration run, two lines in `catalog/views.py` (lines 236–237) remained uncovered:
+
+```python
+except BorrowWorkflowError as exc:
+    messages.error(request, str(exc))
+```
+
+This is the error branch inside `return_book_librarian` that fires when a librarian attempts to return a copy that is already available (status `"a"`).
+
+### Resolution
+
+Added `test_return_already_available_copy_shows_error_message`: POSTs the return URL with an `available_book_instance` fixture (status `"a"`). The service raises `BorrowWorkflowError("Only on-loan copies can be marked as returned.")`, the view catches it and calls `messages.error`, and the test asserts the error message appears in the response.
+
+This brought `catalog/views.py` coverage to **100%** for that run. After later suite consolidation and a deterministic-ordering fix in list views, final Phase 5 coverage remained **100%** (`194/194` statements) with a leaner 30-test integration suite.
+
+---
+
+## CH-012 — UnorderedObjectListWarning from Genre and Language list views
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 5 (Django Client Integration Testing)
+
+### Context
+
+Django's paginator emits `UnorderedObjectListWarning` when paginating a queryset with no guaranteed ordering. The `GenreListView` and `LanguageListView` use generic `ListView` without any `.order_by()` or `Meta.ordering`, so the warning appeared in pytest output during Phase 5.
+
+### Resolution
+
+Implemented the root-cause fix in the application layer by adding explicit ordering in list views:
+
+- `GenreListView.get_queryset()` -> `Genre.objects.order_by("name")`
+- `LanguageListView.get_queryset()` -> `Language.objects.order_by("name")`
+
+Then removed the temporary pytest warning suppression from `pytest.ini` and closed `DEF-P5-001`.
+
+---
