@@ -12,15 +12,11 @@ from tests.fixtures.sample_data import DEFAULT_BOOK_SUMMARY
 pytestmark = [pytest.mark.integration_client, pytest.mark.django_db]
 
 
-def _unique_13_digit_number():
-    return f"{uuid.uuid4().int % (10 ** 13):013d}"
-
-
 def _create_book(title, author, language, genre):
     book = Book.objects.create(
         title=title,
         summary=DEFAULT_BOOK_SUMMARY,
-        isbn=_unique_13_digit_number(),
+        isbn=f"{uuid.uuid4().int % (10 ** 13):013d}",
         author=author,
         language=language,
     )
