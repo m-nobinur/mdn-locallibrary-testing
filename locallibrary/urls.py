@@ -50,6 +50,9 @@ urlpatterns += [
 
 # DRF API routes
 urlpatterns += [
-    path('api/', include('catalog.api.urls')),
+    path(
+        'api/',
+        include(('catalog.api.urls', 'catalog_api'), namespace='catalog_api'),
+    ),
     path('api/auth/token/', obtain_auth_token, name='api-token-auth'),
 ]

@@ -10,6 +10,8 @@ from catalog.api.views import (
     catalog_stats,
 )
 
+app_name = 'catalog_api'
+
 router = DefaultRouter()
 router.register(r'books', BookViewSet, basename='book')
 router.register(r'authors', AuthorViewSet, basename='author')

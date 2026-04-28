@@ -267,7 +267,7 @@ pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
 
 **Markers:** `@pytest.mark.integration_client`
 
-**Coverage target:** `catalog/views.py` at 90%+
+**Coverage target:** `catalog/views.py` at 99%+
 
 **Key scenarios:**
 

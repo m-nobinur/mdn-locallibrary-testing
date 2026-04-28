@@ -1,8 +1,13 @@
 import datetime
+import sys
 import uuid
+from copy import copy
+from pathlib import Path
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.test import client as django_test_client
+
 
 from catalog.models import Author, Book, BookInstance, Genre, Language
 from tests.fixtures.sample_data import (
@@ -11,9 +16,58 @@ from tests.fixtures.sample_data import (
     DEFAULT_PASSWORD,
 )
 
+_PY314_PATCH_STATE = {"store_rendered_templates_patched": False}
+
+
+def pytest_configure():
+    """Apply runtime compatibility patches needed by this test environment."""
+    if sys.version_info < (3, 14):
+        return
+
+    if _PY314_PATCH_STATE["store_rendered_templates_patched"]:
+        return
+
+    def store_rendered_templates_compat(
+        store, signal, sender, template, context, **kwargs
+    ):
+        """Fallback to raw context when Django's shallow copy fails on Python 3.14."""
+        _ = (signal, sender, kwargs)
+        store.setdefault("templates", []).append(template)
+        if "context" not in store:
+            store["context"] = django_test_client.ContextList()
+
+        try:
+            store["context"].append(copy(context))
+        except AttributeError:
+            if hasattr(context, "flatten"):
+                store["context"].append(context.flatten())
+            elif hasattr(context, "dicts"):
+                flattened_context = {}
+                for layer in context.dicts:
+                    flattened_context.update(layer)
+                store["context"].append(flattened_context)
+            else:
+                store["context"].append(context)
+
+    django_test_client.store_rendered_templates = store_rendered_templates_compat
+    _PY314_PATCH_STATE["store_rendered_templates_patched"] = True
+
 
 def _unique_13_digit_number():
     return f"{uuid.uuid4().int % (10**13):013d}"
+
+
+@pytest.fixture(autouse=True)
+def configure_test_staticfiles_storage(settings):
+    """Use non-manifest staticfiles storage so template rendering works in tests."""
+    storages = dict(settings.STORAGES)
+    storages["staticfiles"] = {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    }
+    settings.STORAGES = storages
+
+    # WhiteNoise middleware warns when STATIC_ROOT does not exist.
+    Path(settings.STATIC_ROOT).mkdir(parents=True, exist_ok=True)
 
 
 @pytest.fixture(name="member_user")

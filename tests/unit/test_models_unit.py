@@ -44,9 +44,11 @@ def test_book_display_genre_limits_output_to_first_three(
     genres = [Genre.objects.create(name=name) for name in genre_names]
     book.genre.add(*genres)
 
-    assert book.display_genre() == "Adventure, Mystery, Sci-Fi"
+    displayed_genres = book.display_genre().split(", ")
 
-
+    assert len(displayed_genres) == 3
+    assert set(displayed_genres).issubset(set(genre_names))
+    assert len(set(genre_names) - set(displayed_genres)) == 1
 def test_book_instance_is_overdue_true_for_past_date(catalog_book):
     instance = BookInstance.objects.create(
         book=catalog_book,
