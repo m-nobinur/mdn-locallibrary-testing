@@ -224,8 +224,8 @@ On the local toolchain (`Python 3.14.4`), Django's context copy path used by tes
 
 - Added a Python 3.14 compatibility shim in `conftest.py` inside `pytest_configure()`.
 - Patched `django.test.client.store_rendered_templates` to:
-	- keep Django's normal behavior when `copy(context)` succeeds,
-	- fall back to a flattened context snapshot when that copy raises `AttributeError`.
+- keep Django's normal behavior when `copy(context)` succeeds,
+- fall back to a flattened context snapshot when that copy raises `AttributeError`.
 
 ### Impact
 
@@ -260,7 +260,7 @@ ValueError: Missing staticfiles manifest entry for 'css/styles.css'
 ### Resolution
 
 - Added an autouse pytest fixture in `conftest.py` to set test-time staticfiles backend to:
-	- `django.contrib.staticfiles.storage.StaticFilesStorage`
+- `django.contrib.staticfiles.storage.StaticFilesStorage`
 
 This keeps production static handling unchanged while making unit tests independent of manifest build artifacts.
 
@@ -304,5 +304,44 @@ UserWarning: No directory at: .../staticfiles/
 ### Impact
 
 Catalog test output is significantly cleaner, while warning handling remains explicit and constrained to test execution.
+
+---
+
+## CH-010 — `pytest` passed but `python manage.py test` failed on Python 3.14
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 4
+- **Severity:** High
+
+### Symptom
+
+`pytest -q` passed, but `python manage.py test` failed with repeated template-rendering crashes:
+
+```text
+AttributeError: 'super' object has no attribute 'dicts'
+```
+
+The failure pattern matched the earlier Python 3.14 context-copy issue but only occurred under Django's native test runner.
+
+### Root cause
+
+The Python 3.14 compatibility hooks were implemented in `conftest.py`, so they were only loaded by pytest. Django's built-in runner does not import pytest hooks, which meant `manage.py test` still executed the unpatched `django.test.client.store_rendered_templates` code path.
+
+### Resolution
+
+- Added a test-command-gated compatibility patch in `locallibrary/settings.py`:
+- activate only when running `test` command,
+- patch `django.test.client.store_rendered_templates` with the same safe fallback logic used by pytest,
+- apply test-time staticfiles backend override (`StaticFilesStorage`) and create `STATIC_ROOT` during test startup.
+- Updated README test compatibility notes to clarify that pytest and Django native runner now both receive equivalent test-only compatibility behavior.
+
+### Impact
+
+Both test runners now pass on Python 3.14 in local development:
+
+- `python manage.py test` -> pass
+- `pytest -q` -> pass
+
+This removes runner-specific confusion and aligns quick smoke checks with the extended pytest workflow.
 
 ---

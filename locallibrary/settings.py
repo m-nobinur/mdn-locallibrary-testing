@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import sys
+from copy import copy
 from pathlib import Path
 from dotenv import load_dotenv
 
 import dj_database_url
+from django.test import client as django_test_client
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -165,18 +168,60 @@ if 'DATABASE_URL' in os.environ:
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 # The absolute path to the directory where collectstatic will collect static files for deployment.
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
 
 
 # Static file serving.
 # https://whitenoise.readthedocs.io/en/stable/django.html#add-compression-and-caching-support
 STORAGES = {
-    # ...
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+def _apply_py314_manage_test_compatibility():
+    """Apply Python 3.14 test-runner compatibility for Django's native test command."""
+    if sys.version_info < (3, 14):
+        return
+
+    if "test" not in sys.argv:
+        return
+
+    def store_rendered_templates_compat(
+        store, signal, sender, template, context, **kwargs
+    ):
+        _ = (signal, sender, kwargs)
+        store.setdefault("templates", []).append(template)
+        if "context" not in store:
+            store["context"] = django_test_client.ContextList()
+
+        try:
+            store["context"].append(copy(context))
+        except AttributeError:
+            if hasattr(context, "flatten"):
+                store["context"].append(context.flatten())
+            elif hasattr(context, "dicts"):
+                flattened_context = {}
+                for layer in context.dicts:
+                    flattened_context.update(layer)
+                store["context"].append(flattened_context)
+            else:
+                store["context"].append(context)
+
+    django_test_client.store_rendered_templates = store_rendered_templates_compat
+
+
+_apply_py314_manage_test_compatibility()
+
+
+if "test" in sys.argv:
+    test_storages = dict(STORAGES)
+    test_storages["staticfiles"] = {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    }
+    STORAGES = test_storages
+    Path(STATIC_ROOT).mkdir(parents=True, exist_ok=True)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
