@@ -12,10 +12,6 @@ from tests.fixtures.sample_data import DEFAULT_BOOK_SUMMARY
 pytestmark = [pytest.mark.integration_client, pytest.mark.django_db]
 
 
-def _unique_13_digit_number():
-    return f"{uuid.uuid4().int % (10 ** 13):013d}"
-
-
 def test_book_list_without_query_returns_all_books(
     catalog_book, catalog_author, catalog_language
 ):
@@ -23,7 +19,7 @@ def test_book_list_without_query_returns_all_books(
     other_book = Book.objects.create(
         title="Dracula",
         summary=DEFAULT_BOOK_SUMMARY,
-        isbn=_unique_13_digit_number(),
+        isbn=f"{uuid.uuid4().int % (10 ** 13):013d}",
         author=catalog_author,
         language=catalog_language,
     )
@@ -41,7 +37,7 @@ def test_book_list_search_filters_case_insensitively(
     other_book = Book.objects.create(
         title="Dracula",
         summary=DEFAULT_BOOK_SUMMARY,
-        isbn=_unique_13_digit_number(),
+        isbn=f"{uuid.uuid4().int % (10 ** 13):013d}",
         author=catalog_author,
         language=catalog_language,
     )
