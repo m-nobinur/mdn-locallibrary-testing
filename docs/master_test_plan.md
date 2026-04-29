@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.8  
+**Document version:** 1.9  
 **Last updated:** 2026-04-29  
-**Project phase:** Phase 7 — Browser E2E UI Tests  
+**Project phase:** Phase 8 — Consolidated Coverage Push  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -454,7 +454,47 @@ pytest -m "not e2e_ui" \
   --html=reports/full-test-report.html
 ```
 
-**Status:** Planned
+**Execution result (2026-04-29):**
+
+- Project-todo command (`-m "not system"`): `108 passed`, `11 skipped`
+- Marker-aligned command (`-m "not e2e_ui"`): `108 passed`, `11 deselected`
+- Overall combined coverage (`catalog` + `locallibrary`): **97%** (`937 statements`, `32 missing`)
+
+**Target verification:**
+
+| Area             | Target  | Achieved |
+| ---------------- | ------- | -------- |
+| Core app logic   | 90%+    | 100%     |
+| Services and API | 95–100% | 100%     |
+| Forms            | 100%    | 100%     |
+| Views            | 90%+    | 100%     |
+
+**Module highlights:**
+
+- `catalog/forms.py`: `100%`
+- `catalog/models.py`: `100%`
+- `catalog/services.py`: `100%`
+- `catalog/views.py`: `100%`
+- `catalog/api/serializers.py`: `100%`
+- `catalog/api/urls.py`: `100%`
+- `catalog/api/views.py`: `100%`
+
+**Known uncovered areas and rationale:**
+
+- `locallibrary/asgi.py` and `locallibrary/wsgi.py` are deployment entry points and are not imported by the in-process pytest workflow.
+- `locallibrary/settings.py` remaining misses are environment-conditional startup and test-runner compatibility branches (`.env` detection, `DATABASE_URL` handling, and `manage.py test` path).
+- No meaningful uncovered behavior remained in core functional modules after the consolidated run; no additional core tests were required for this phase.
+
+**Evidence artefacts:**
+
+- `docs/evidence/phase-8/README.md`
+- `docs/evidence/phase-8/coverage-summary.png`
+- `docs/evidence/phase-8/full-test-report-summary.png`
+- `reports/full-test-report.html`
+- `reports/coverage-html/index.html`
+- `reports/coverage.xml`
+
+**Status:** ✅ Complete — Consolidated coverage push finished
 
 ---
 
@@ -502,4 +542,4 @@ Requirements → test case mapping is maintained in `docs/traceability_matrix.cs
 
 ## 7. Defect management
 
-Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 7, all logged defects are closed or mitigated, including browser E2E UI setup stabilization (`DEF-P7-001`).
+Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 8, all logged defects are closed or mitigated, including the marker-expression documentation drift captured in `DEF-P8-001`.
