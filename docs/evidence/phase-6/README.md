@@ -36,17 +36,10 @@
 | `tests/integration/api/test_stats.py` | 2 | Stats authenticated and unauthenticated behavior |
 | **Total** | **18** | |
 
-## Evidence files
-
-- [integration-api-report.png](integration-api-report.png) - Pytest HTML integration API report overview
-- [coverage-integration-api-summary.png](coverage-integration-api-summary.png) - Coverage HTML summary for `catalog.api`
-- [Integration API report (HTML)](../../../reports/integration-api-report.html)
-- Coverage report (HTML) - generated locally at `reports/coverage-integration-api-html/index.html`
-
-## Integration API report view
+## Integration API report
 
 ![Integration API report summary](integration-api-report.png)
 
-## Coverage report view
+## Coverage report
 
 ![Coverage integration API summary](coverage-integration-api-summary.png)

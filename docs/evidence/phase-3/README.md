@@ -9,7 +9,7 @@
 - Borrow/return feedback is shown through Django flash messages
 - Borrow and return state transitions are centralized in `catalog/services.py`
 
-## Files changed in Phase 3
+## Files changed
 
 | File                                                            | Purpose                                                                  |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------ |
@@ -34,14 +34,6 @@
 - [x] Open `/catalog/mybooks/` and verify borrowed copy appears
 - [x] Log in as librarian and mark borrowed copy as returned from `/catalog/borrowed/`
 - [x] Confirm success/error flash messages appear for borrow and return actions
-
-## Evidence files
-
-- [search-results.png](search-results.png) - Search results for the Phase 3 test title
-- [member-borrow-success.png](member-borrow-success.png) - Successful member borrow action
-- [my-borrowed-list.png](my-borrowed-list.png) - Borrowed title visible in member borrowed list
-- [librarian-return-success.png](librarian-return-success.png) - Successful librarian return action
-- [flash-message-feedback.png](flash-message-feedback.png) - Flash-message feedback after workflow actions
 
 ## Search results view
 

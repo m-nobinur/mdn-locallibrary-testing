@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.9  
+**Document version:** 2.0  
 **Last updated:** 2026-04-29  
-**Project phase:** Phase 8 — Consolidated Coverage Push  
+**Project phase:** Phase 9 — Final Documentation and Reporting  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -504,13 +504,33 @@ pytest -m "not e2e_ui" \
 
 **Deliverables:**
 
-- Finalised README with MDN attribution ✓ (Phase 1)
-- This document, updated through Phase 8
-- `docs/traceability_matrix.csv` — maps requirements to test IDs
-- `docs/defect_log.csv` — records defects found during testing
-- `docs/challenge_log.md` — records setup and implementation challenges
-- HTML/XML coverage reports in `reports/`
-- HTML test reports per phase in `reports/`
+- Finalised README with MDN attribution and project overview
+- Master test plan updated through final close-out
+- `docs/traceability_matrix.csv` complete and current
+- `docs/defect_log.csv` complete and current
+- `docs/challenge_log.md` complete and current
+- Final technical report prepared in LaTeX (`docs/final_report.tex`) for Overleaf submission
+- Phase 9 evidence index documented (`docs/evidence/phase-9/README.md`)
+- HTML/XML coverage reports available in `reports/`
+- HTML test reports available in `reports/` (including `system-report.html` alias)
+
+**Phase 9 completion validation (2026-04-29):**
+
+| Checklist item | Validation evidence |
+| --- | --- |
+| Repository visibility | `gh repo view --json nameWithOwner,visibility,url` → `PUBLIC` |
+| Remotes configured | `git remote -v` shows `origin` (project repo) and `upstream` (MDN) |
+| Environment managed with uv | `uv --version` confirms active uv toolchain |
+| Application health check | `.venv/bin/python manage.py check` → no issues |
+| Unit tests pass | `.venv/bin/python -m pytest -m unit -q` → `20 passed` |
+| Client integration tests pass | `.venv/bin/python -m pytest -m integration_client -q` → `30 passed` |
+| API integration tests pass | `.venv/bin/python -m pytest -m integration_api -q` → `18 passed` |
+| System tests pass | `RUN_SYSTEM_TESTS=1 .venv/bin/python -m pytest -m e2e_ui -q` → `11 passed` |
+| Coverage reports exist | `reports/coverage-html/index.html`, `reports/coverage.xml` |
+| HTML test reports exist | `reports/unit-report.html`, `reports/integration-client-report.html`, `reports/integration-api-report.html`, `reports/e2e-ui-report.html`, `reports/system-report.html`, `reports/full-test-report.html` |
+| API response examples saved | `docs/evidence/phase-6/api-response-examples.md` |
+
+**Status:** Complete (2026-04-29)
 
 **Status:** Planned
 
@@ -524,7 +544,7 @@ pytest -m "not e2e_ui" \
 | ------ | -------- |
 | OS | macOS (Apple Silicon) |
 | Python | 3.14.4 (via Homebrew `python@3.14`) |
-| Virtual environment | `.venv` managed by `uv 0.11.6` |
+| Virtual environment | `.venv` managed by `uv 0.11.8` |
 | Database | SQLite (`db.sqlite3`, git-ignored) |
 | Browser (Selenium) | Chrome, managed by `selenium-manager` |
 
@@ -536,10 +556,10 @@ See `docs/challenge_log.md` entry **CH-001** for details on the `psycopg2-binary
 
 ## 6. Traceability
 
-Requirements → test case mapping is maintained in `docs/traceability_matrix.csv`. This document will be updated at the conclusion of each phase.
+Requirements → test case mapping is maintained in `docs/traceability_matrix.csv` and is complete through Phase 9 close-out.
 
 ---
 
 ## 7. Defect management
 
-Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 8, all logged defects are closed or mitigated, including the marker-expression documentation drift captured in `DEF-P8-001`.
+Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 9 close-out, all logged defects are closed or mitigated with no open critical issues remaining.
