@@ -26,6 +26,7 @@ Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/e
 | 6 — Requests-based API integration tests | [docs/evidence/phase-6/README.md](docs/evidence/phase-6/README.md) — 18 HTTP API integration tests across token/books/authors/book-instances/genres/languages/stats with 100% `catalog.api` coverage |
 | 7 — Browser E2E UI tests | [docs/evidence/phase-7/README.md](docs/evidence/phase-7/README.md) — 11 end-to-end browser journeys covering member borrow, librarian return/renew, public browse, action GET hardening, and concurrent workflow error paths |
 | 8 — Consolidated coverage | [docs/evidence/phase-8/README.md](docs/evidence/phase-8/README.md) — full non-browser consolidated run, combined `catalog` + `locallibrary` coverage outputs, and browser-captured coverage/report evidence |
+| 9 — Final documentation and reporting | [docs/evidence/phase-9/README.md](docs/evidence/phase-9/README.md) — final documentation close-out, validation checks, and submission artifact index |
 
 ---
 
@@ -206,7 +207,7 @@ python -m isort .
 | 6   | Requests-based API integration tests | Complete |
 | 7   | Browser E2E UI tests                 | Complete |
 | 8   | Consolidated coverage push           | Complete |
-| 9   | Final documentation and reporting    | Planned  |
+| 9   | Final documentation and reporting    | Complete |
 
 ---
 
