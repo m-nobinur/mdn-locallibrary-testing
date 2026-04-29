@@ -25,6 +25,7 @@ Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/e
 | 5 — Django client integration tests | [docs/evidence/phase-5/README.md](docs/evidence/phase-5/README.md) — streamlined 30-test suite, catalog/views.py 100% coverage, HTML test report and coverage screenshots |
 | 6 — Requests-based API integration tests | [docs/evidence/phase-6/README.md](docs/evidence/phase-6/README.md) — 18 HTTP API integration tests across token/books/authors/book-instances/genres/languages/stats with 100% `catalog.api` coverage |
 | 7 — Browser E2E UI tests | [docs/evidence/phase-7/README.md](docs/evidence/phase-7/README.md) — 11 end-to-end browser journeys covering member borrow, librarian return/renew, public browse, action GET hardening, and concurrent workflow error paths |
+| 8 — Consolidated coverage | [docs/evidence/phase-8/README.md](docs/evidence/phase-8/README.md) — full non-browser consolidated run, combined `catalog` + `locallibrary` coverage outputs, and browser-captured coverage/report evidence |
 
 ---
 
@@ -136,6 +137,10 @@ pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
   --cov-report=term-missing --cov-report=html:reports/coverage-html \
   --html=reports/unit-report.html --self-contained-html
 pytest                                 # all non-E2E UI tests
+pytest -m "not e2e_ui" --cov=catalog --cov=locallibrary \
+  --cov-report=term-missing --cov-report=html:reports/coverage-html \
+  --cov-report=xml:reports/coverage.xml \
+  --html=reports/full-test-report.html --self-contained-html
 RUN_SYSTEM_TESTS=1 pytest -m e2e_ui --html=reports/e2e-ui-report.html --self-contained-html
 ```
 
@@ -200,7 +205,7 @@ python -m isort .
 | 5   | Django client integration tests      | Complete |
 | 6   | Requests-based API integration tests | Complete |
 | 7   | Browser E2E UI tests                 | Complete |
-| 8   | Consolidated coverage push           | Planned  |
+| 8   | Consolidated coverage push           | Complete |
 | 9   | Final documentation and reporting    | Planned  |
 
 ---
