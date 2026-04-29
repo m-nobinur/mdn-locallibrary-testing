@@ -21,15 +21,17 @@
   - `catalog/models.py`: `100%`
   - `catalog/services.py`: `100%`
 
-## Evidence files
+## Test file breakdown
 
-- [coverage-files-overview.png](coverage-files-overview.png) - Coverage HTML files summary view
-- [coverage-functions-overview.png](coverage-functions-overview.png) - Coverage HTML functions view
-- [coverage-classes-overview.png](coverage-classes-overview.png) - Coverage HTML classes view
-- [unit-report-overview.png](unit-report-overview.png) - Pytest HTML unit report
-- [Unit report (HTML)](../../../reports/unit-report.html)
+| File                               | Tests | Scope                                                                         |
+| ---------------------------------- | ----- | ----------------------------------------------------------------------------- |
+| `tests/unit/test_models_unit.py`   | `9`   | Domain model behaviour (string methods, URLs, overdue state, display helpers) |
+| `tests/unit/test_services_unit.py` | `6`   | Borrow/return service rules (state transitions, auth and duration validation) |
+| `tests/unit/test_forms_unit.py`    | `5`   | Loan renewal form validation boundaries and field metadata                    |
 
-## Coverage files view
+Counts above come from `pytest -m unit --collect-only -q` and match the `20 passed` result in this phase.
+
+## Coverage report
 
 ![Coverage files summary](coverage-files-overview.png)
 
