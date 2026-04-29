@@ -1,8 +1,8 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
-**Document version:** 1.6  
-**Last updated:** 2026-04-28  
-**Project phase:** Phase 6 — Requests-Based API Integration Tests  
+**Document version:** 1.8  
+**Last updated:** 2026-04-29  
+**Project phase:** Phase 7 — Browser E2E UI Tests  
 **Author:** Project contributor  
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
@@ -27,7 +27,7 @@ The application under test is a Django-based library catalogue originally author
 - The Django admin interface (covered by Django's own test suite)
 - Third-party packages (Django, DRF, WhiteNoise, etc.)
 - Infrastructure and deployment pipeline
-- Browser compatibility beyond Chrome/Chromium (Selenium phase)
+- Browser compatibility beyond Chrome/Chromium (E2E UI phase)
 
 ---
 
@@ -93,11 +93,11 @@ Key business rules worth testing:
 
 ## 3. Testing strategy overview
 
-The project uses a test-pyramid approach. The bulk of coverage comes from fast unit and Django-client integration tests; a smaller number of Selenium tests cover critical end-to-end journeys.
+The project uses a test-pyramid approach. The bulk of coverage comes from fast unit and Django-client integration tests; a smaller number of browser E2E UI tests cover critical end-to-end journeys.
 
 ```md
               ┌─────────────────┐
-              │   Selenium E2E  │  ← small count, slow, brittle if overused
+              │ Browser E2E UI  │  ← small count, slow, brittle if overused
               ├─────────────────┤
               │  Requests API   │  ← black-box HTTP against live test server
               ├─────────────────┤
@@ -377,13 +377,13 @@ Produced by the coverage command above when run locally.
 
 ---
 
-### Phase 7 — Selenium system tests
+### Phase 7 — Browser E2E UI tests
 
 **Goal:** Verify critical end-to-end user journeys in a real browser. These tests are gated behind a `RUN_SYSTEM_TESTS=1` environment variable so they don't run accidentally in CI.
 
-**Markers:** `@pytest.mark.system`
+**Markers:** `@pytest.mark.e2e_ui`
 
-**Browser:** Chrome + ChromeDriver (managed via `webdriver-manager` or `selenium-manager`)
+**Browser:** Chrome with Selenium Manager driver resolution (`selenium==4.25.0`)
 
 **Page objects:**
 
@@ -392,26 +392,47 @@ Produced by the coverage command above when run locally.
 - `CatalogPage`
 - `BookDetailPage`
 - `BorrowedBooksPage`
+- `RenewBookPage`
 
 **Journeys:**
 
 1. Member logs in → searches for a known book → borrows a copy → sees it in "My Borrowed Books"
 2. Librarian logs in → finds borrowed copy → marks it returned → copy no longer shows as borrowed
-3. Regular member attempts to access librarian-only return URL → gets 403
+3. Regular member attempts to access librarian-only borrowed area (`/catalog/borrowed/`) → gets 403
+4. Anonymous visitor browses home → books → book detail → authors → genres → languages
+5. Librarian renews a borrowed copy with a valid date and the loan due date updates
+6. Librarian renew form rejects a date more than 4 weeks ahead and re-renders with a validation error
+7. Member browser GET on `/catalog/bookinstance/<uuid>/borrow/` redirects without state change
+8. Librarian browser GET on `/catalog/bookinstance/<uuid>/return/` redirects without state change
+9. Concurrent borrow: copy becomes unavailable after page load → click Borrow → flash error
+10. Concurrent return: copy is returned after page load → click Mark returned → flash error
+11. Defense-in-depth: editor direct-POSTs to `/catalog/book/<id>/delete/` for a book with copies → server `RestrictedError` handler refuses deletion with a flash error
 
 **Run command:**
 
 ```bash
-RUN_SYSTEM_TESTS=1 pytest -m system --html=reports/system-report.html
+RUN_SYSTEM_TESTS=1 pytest -m e2e_ui --html=reports/e2e-ui-report.html --self-contained-html
 ```
 
-**Status:** Planned
+**Coverage command:**
+
+```bash
+RUN_SYSTEM_TESTS=1 pytest -m e2e_ui --cov=catalog.views --cov-report=term-missing --cov-report=html:reports/coverage-e2e-ui-html
+```
+
+**Execution result (2026-04-29):**
+
+- Selected E2E UI tests: `11 passed`, `0 failures`, `0 skipped`
+- E2E UI coverage result (`catalog/views.py`): `97%` (`194 statements`, `5 missing`)
+- Remaining miss is `AuthorDelete.form_valid` `RestrictedError` branch (lines 261-265), already covered by the integration-client suite (`REQ-WF-018`).
+
+**Status:** ✅ Complete — Browser E2E UI journeys delivered (95%+ coverage on `catalog/views.py`)
 
 ---
 
 ### Phase 8 — Consolidated coverage push
 
-**Goal:** Run the full test suite (excluding Selenium), identify uncovered branches, and close meaningful gaps to meet aggregate targets.
+**Goal:** Run the full test suite (excluding browser E2E UI tests), identify uncovered branches, and close meaningful gaps to meet aggregate targets.
 
 **Aggregate coverage targets:**
 
@@ -425,7 +446,7 @@ RUN_SYSTEM_TESTS=1 pytest -m system --html=reports/system-report.html
 **Run command:**
 
 ```bash
-pytest -m "not system" \
+pytest -m "not e2e_ui" \
   --cov=catalog --cov=locallibrary \
   --cov-report=term-missing \
   --cov-report=html:reports/coverage-html \
@@ -481,16 +502,4 @@ Requirements → test case mapping is maintained in `docs/traceability_matrix.cs
 
 ## 7. Defect management
 
-Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 4, one low-severity environment warning is logged (`DEF-P4-001`).
-
----
-
-## 8. Revision history
-
-| Version | Date | Author | Changes |
-| --------- | ------ | -------- | --------- |
-| 1.0 | 2026-04-26 | Project contributor | Initial document — Phase 1 baseline |
-| 1.1 | 2026-04-26 | Project contributor | Phase 2 DRF API — initial endpoints (books, authors, book-instances, auth token) |
-| 1.2 | 2026-04-27 | Project contributor | Phase 2 extended — added genres, languages, stats endpoints; search/ordering filters; status filter on book-instances; updated Phase 6 scenarios; corrected URL registration bug in `locallibrary/urls.py` |
-| 1.3 | 2026-04-27 | Project contributor | Phase 3 implementation — added catalogue search, borrow and return endpoints, shared workflow service layer, and flash-message UI updates |
-| 1.4 | 2026-04-27 | Project contributor | Phase 4 implementation — configured pytest markers/fixtures, added top-level unit tests for forms/models/services, and achieved 100% target-module coverage with HTML evidence |
+Defects discovered during testing are logged in `docs/defect_log.csv` with ID, phase, severity, description, status, and resolution. As of Phase 7, all logged defects are closed or mitigated, including browser E2E UI setup stabilization (`DEF-P7-001`).

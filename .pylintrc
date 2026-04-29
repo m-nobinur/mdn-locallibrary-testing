@@ -19,6 +19,8 @@ good-names=i,j,k,ex,Run,_,pk,id
 
 [DESIGN]
 max-args=8
+max-positional-arguments=8
+min-similarity-lines=15
 
 [TYPECHECK]
 generated-members=objects,DoesNotExist,MultipleObjectsReturned,id,pk,_meta

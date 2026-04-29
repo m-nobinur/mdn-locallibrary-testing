@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.core.servers import basehttp as django_basehttp
+from django.db.utils import DatabaseError
 from django.test import client as django_test_client
 
 
@@ -17,7 +19,10 @@ from tests.fixtures.sample_data import (
     DEFAULT_PASSWORD,
 )
 
-_PY314_PATCH_STATE = {"store_rendered_templates_patched": False}
+_PY314_PATCH_STATE = {
+    "store_rendered_templates_patched": False,
+    "threaded_server_close_connections_patched": False,
+}
 
 
 def pytest_configure():
@@ -25,33 +30,52 @@ def pytest_configure():
     if sys.version_info < (3, 14):
         return
 
-    if _PY314_PATCH_STATE["store_rendered_templates_patched"]:
-        return
+    if not _PY314_PATCH_STATE["store_rendered_templates_patched"]:
+        def store_rendered_templates_compat(
+            store, signal, sender, template, context, **kwargs
+        ):
+            """Fallback to raw context when Django's shallow copy fails on Python 3.14."""
+            _ = (signal, sender, kwargs)
+            store.setdefault("templates", []).append(template)
+            if "context" not in store:
+                store["context"] = django_test_client.ContextList()
 
-    def store_rendered_templates_compat(
-        store, signal, sender, template, context, **kwargs
-    ):
-        """Fallback to raw context when Django's shallow copy fails on Python 3.14."""
-        _ = (signal, sender, kwargs)
-        store.setdefault("templates", []).append(template)
-        if "context" not in store:
-            store["context"] = django_test_client.ContextList()
+            try:
+                store["context"].append(copy(context))
+            except AttributeError:
+                if hasattr(context, "flatten"):
+                    store["context"].append(context.flatten())
+                elif hasattr(context, "dicts"):
+                    flattened_context = {}
+                    for layer in context.dicts:
+                        flattened_context.update(layer)
+                    store["context"].append(flattened_context)
+                else:
+                    store["context"].append(context)
 
-        try:
-            store["context"].append(copy(context))
-        except AttributeError:
-            if hasattr(context, "flatten"):
-                store["context"].append(context.flatten())
-            elif hasattr(context, "dicts"):
-                flattened_context = {}
-                for layer in context.dicts:
-                    flattened_context.update(layer)
-                store["context"].append(flattened_context)
-            else:
-                store["context"].append(context)
+        django_test_client.store_rendered_templates = store_rendered_templates_compat
+        _PY314_PATCH_STATE["store_rendered_templates_patched"] = True
 
-    django_test_client.store_rendered_templates = store_rendered_templates_compat
-    _PY314_PATCH_STATE["store_rendered_templates_patched"] = True
+    if not _PY314_PATCH_STATE["threaded_server_close_connections_patched"]:
+        original_close_connections = getattr(
+            django_basehttp.ThreadedWSGIServer,
+            "_close_connections",
+        )
+
+        def _close_connections_compat(self):
+            """Ignore known Python 3.14 SQLite thread-sharing close warning path."""
+            try:
+                original_close_connections(self)
+            except DatabaseError as exc:
+                if "created in a thread can only be used in that same thread" not in str(exc):
+                    raise
+
+        setattr(
+            django_basehttp.ThreadedWSGIServer,
+            "_close_connections",
+            _close_connections_compat,
+        )
+        _PY314_PATCH_STATE["threaded_server_close_connections_patched"] = True
 
 
 def _unique_13_digit_number():
