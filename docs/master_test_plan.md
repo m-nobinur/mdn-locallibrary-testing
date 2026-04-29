@@ -369,7 +369,9 @@ pytest -m integration_api --cov=catalog.api --cov-report=term-missing --cov-repo
 - `docs/evidence/phase-6/integration-api-report.png`
 - `docs/evidence/phase-6/coverage-integration-api-summary.png`
 - `reports/integration-api-report.html`
-- `reports/coverage-integration-api-html/index.html`
+
+**Local generated output (not committed):** `reports/coverage-integration-api-html/index.html`  
+Produced by the coverage command above when run locally.
 
 **Status:** ✅ Complete — Requests-based API integration baseline delivered
 
