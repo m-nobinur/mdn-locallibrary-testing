@@ -6,7 +6,7 @@
 
 ## Overview
 
-A software quality assurance study project built on MDN's Django tutorial app — a modest library catalogue that, frankly, turns out to be a pretty ideal specimen for demonstrating a full test-pyramid implementation. On top of the original Django application, this repo adds a DRF REST API, borrow/return workflows, and nine test phases ranging from isolated unit assertions up to Selenium end-to-end journeys.
+A software quality assurance study project built on MDN's Django tutorial app — a modest library catalogue that, frankly, turns out to be a pretty ideal specimen for demonstrating a full test-pyramid implementation. On top of the original Django application, this repo adds a DRF REST API, borrow/return workflows, and nine test phases ranging from isolated unit assertions up to browser end-to-end UI journeys.
 
 Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Every stumble along the way is catalogued in [docs/challenge_log.md](docs/challenge_log.md).
 
@@ -24,6 +24,7 @@ Evidence artefacts are organised by delivery phase under [docs/evidence/](docs/e
 | 4 — Unit testing and coverage | [docs/evidence/phase-4/README.md](docs/evidence/phase-4/README.md) — pytest unit report, HTML coverage report, manual screenshot evidence |
 | 5 — Django client integration tests | [docs/evidence/phase-5/README.md](docs/evidence/phase-5/README.md) — streamlined 30-test suite, catalog/views.py 100% coverage, HTML test report and coverage screenshots |
 | 6 — Requests-based API integration tests | [docs/evidence/phase-6/README.md](docs/evidence/phase-6/README.md) — 18 HTTP API integration tests across token/books/authors/book-instances/genres/languages/stats with 100% `catalog.api` coverage |
+| 7 — Browser E2E UI tests | [docs/evidence/phase-7/README.md](docs/evidence/phase-7/README.md) — 11 end-to-end browser journeys covering member borrow, librarian return/renew, public browse, action GET hardening, and concurrent workflow error paths |
 
 ---
 
@@ -47,7 +48,7 @@ mdn-locallibrary-testing/
 ├── templates/            # Project-level auth/registration templates
 ├── docs/                 # Test plan, challenge log, evidence, traceability matrix, defect log
 ├── requirements.txt      # Runtime dependencies (SQLite-only, no psycopg2)
-├── requirements-dev.txt  # DRF and testing dependencies (pytest, coverage, requests)
+├── requirements-dev.txt  # DRF and testing dependencies (pytest, coverage, requests, selenium)
 ├── requirements-prod.txt # Adds psycopg2 for PostgreSQL deployments on Python ≤ 3.13
 ├── manage.py
 └── runtime.txt           # Python version pin for production deployments
@@ -134,8 +135,29 @@ Extended pytest suite (once Phases 4–8 are complete):
 pytest -m unit --cov=catalog.forms --cov=catalog.models --cov=catalog.services \
   --cov-report=term-missing --cov-report=html:reports/coverage-html \
   --html=reports/unit-report.html --self-contained-html
-pytest                                 # all non-system tests
-RUN_SYSTEM_TESTS=1 pytest -m system    # Selenium journeys
+pytest                                 # all non-E2E UI tests
+RUN_SYSTEM_TESTS=1 pytest -m e2e_ui --html=reports/e2e-ui-report.html --self-contained-html
+```
+
+### E2E UI browser setup
+
+- Chrome must be installed locally.
+- Driver provisioning is automatic via Selenium Manager (bundled with Selenium 4).
+
+| Env var | Default | Purpose |
+| ------- | ------- | ------- |
+| `RUN_SYSTEM_TESTS` | unset | Required gate. Set to `1` to execute browser E2E UI journeys. |
+| `SYSTEM_TEST_HEADLESS` | `1` | Set to `0` to launch Chrome with a visible window. |
+
+Examples:
+
+```bash
+# Headless, default mode used by CI
+RUN_SYSTEM_TESTS=1 pytest -m e2e_ui -q
+
+# Run a single journey with a visible browser
+SYSTEM_TEST_HEADLESS=0 RUN_SYSTEM_TESTS=1 \
+  pytest tests/system/test_librarian_renew_journey.py -q
 ```
 
 ### Test compatibility hooks
@@ -177,7 +199,7 @@ python -m isort .
 | 4   | Unit tests + coverage                | Complete |
 | 5   | Django client integration tests      | Complete |
 | 6   | Requests-based API integration tests | Complete |
-| 7   | Selenium system tests                | Planned  |
+| 7   | Browser E2E UI tests                 | Complete |
 | 8   | Consolidated coverage push           | Planned  |
 | 9   | Final documentation and reporting    | Planned  |
 

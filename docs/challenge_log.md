@@ -115,7 +115,7 @@ Initial template patterns in the tutorial code mostly use links, and there was n
 
 ### Impact
 
-Without this, the workflow would be vulnerable to accidental or unsafe mutations and harder to reason about in later integration and system tests.
+Without this, the workflow would be vulnerable to accidental or unsafe mutations and harder to reason about in later integration and browser E2E UI tests.
 
 ---
 
@@ -398,5 +398,56 @@ Then removed the temporary pytest warning suppression from `pytest.ini` and clos
 ### Summary
 
 Phase 6 ran as planned using `pytest-django`'s `live_server` fixture and the `requests` library. No host binding, firewall, or environment restrictions blocked endpoint execution.
+
+---
+
+## CH-014 — Phase 7 browser E2E UI environment bootstrap
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 7 (Browser E2E UI Testing)
+
+### Context
+
+`requirements-dev.txt` was missing a Selenium package entry, so the browser E2E UI layer could not be executed in a clean environment.
+
+### Resolution
+
+- Added `selenium==4.25.0` to `requirements-dev.txt`.
+- Implemented E2E UI fixtures in `tests/system/conftest.py`:
+  - `RUN_SYSTEM_TESTS=1` gate to prevent accidental execution
+  - headless-by-default Chrome WebDriver fixture
+- Used Selenium Manager (bundled) for automatic driver provisioning.
+
+---
+
+## CH-015 — Pytest thread warning during Django live-server teardown
+
+- **Date:** 2026-04-29
+- **Phase:** Phase 7 (Browser E2E UI Testing)
+- **Severity:** Low
+
+### Symptom
+
+Full-suite runs completed functionally but still emitted a warning:
+
+```text
+PytestUnhandledThreadExceptionWarning
+django.db.utils.DatabaseError: DatabaseWrapper objects created in a thread can only be used in that same thread
+```
+
+The stack trace pointed to Django's live-server thread shutdown path in `django.core.servers.basehttp.ThreadedWSGIServer._close_connections`.
+
+### Resolution
+
+- Added a Python 3.14 test-only compatibility shim in `conftest.py`.
+- Wrapped `ThreadedWSGIServer._close_connections` to ignore only the known cross-thread SQLite close `DatabaseError` message while re-raising any other database exceptions.
+- Kept the fix narrowly scoped to pytest runtime patching to avoid production behavior changes.
+
+### Impact
+
+`SYSTEM_TEST_HEADLESS=0 RUN_SYSTEM_TESTS=1 .venv/bin/python -m pytest` now completes with clean output:
+
+- `119 passed`
+- `0 warnings`
 
 ---
