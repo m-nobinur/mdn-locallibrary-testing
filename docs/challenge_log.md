@@ -6,7 +6,7 @@ This log records every significant obstacle, version conflict, or unexpected beh
 
 ## CH-001 — psycopg2-binary fails to build on Python 3.14
 
-- **Date:** 2026-04-26
+- **Date:** 2026-04-24
 - **Phase:** Phase 1
 - **Severity:** High
 
@@ -49,7 +49,7 @@ Without this fix, nobody running Python 3.14 could install the project's depende
 
 ## CH-002 — Phase 2 completed without blocking challenges
 
-- **Date:** 2026-04-26
+- **Date:** 2026-04-24
 - **Phase:** Phase 2
 - **Severity:** N/A
 
@@ -61,7 +61,7 @@ Phase 2 DRF integration completed cleanly. No blocking issues were encountered d
 
 ## CH-003 — Pylint E1101 false positives on Django ORM field descriptors
 
-- **Date:** 2026-04-27
+- **Date:** 2026-04-25
 - **Phase:** Phase 2
 - **Severity:** Low
 
@@ -88,7 +88,7 @@ Pylint analyses Django model field descriptors statically. At definition time `b
 
 ## CH-004 — Preventing unsafe state changes in borrow/return workflows
 
-- **Date:** 2026-04-27
+- **Date:** 2026-04-25
 - **Phase:** Phase 3
 - **Severity:** Medium
 
@@ -121,7 +121,7 @@ Without this, the workflow would be vulnerable to accidental or unsafe mutations
 
 ## CH-005 — Pytest emits Django deprecation warnings on Python 3.14
 
-- **Date:** 2026-04-27
+- **Date:** 2026-04-26
 - **Phase:** Phase 4
 - **Severity:** Low
 
@@ -157,7 +157,7 @@ No functional impact on Phase 4 deliverables. Risk is future-facing: warning noi
 
 ## CH-006 — DRF route names collided with catalog HTML route names
 
-- **Date:** 2026-04-27
+- **Date:** 2026-04-26
 - **Phase:** Phase 4
 - **Severity:** Medium
 
@@ -272,7 +272,7 @@ Catalog view tests now render templates reliably in local CI-style runs without 
 
 ## CH-009 — Warning noise in pytest output after functional fixes
 
-- **Date:** 2026-04-28
+- **Date:** 2026-04-27
 - **Phase:** Phase 4
 - **Severity:** Low
 
@@ -387,5 +387,16 @@ Implemented the root-cause fix in the application layer by adding explicit order
 - `LanguageListView.get_queryset()` -> `Language.objects.order_by("name")`
 
 Then removed the temporary pytest warning suppression from `pytest.ini` and closed `DEF-P5-001`.
+
+---
+
+## CH-013 — Phase 6 API integration completed without live-server restrictions
+
+- **Date:** 2026-04-28
+- **Phase:** Phase 6 (Requests-Based API Integration Testing)
+
+### Summary
+
+Phase 6 ran as planned using `pytest-django`'s `live_server` fixture and the `requests` library. No host binding, firewall, or environment restrictions blocked endpoint execution.
 
 ---
