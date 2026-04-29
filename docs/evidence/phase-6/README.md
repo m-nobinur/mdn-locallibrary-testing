@@ -41,7 +41,7 @@
 - [integration-api-report.png](integration-api-report.png) - Pytest HTML integration API report overview
 - [coverage-integration-api-summary.png](coverage-integration-api-summary.png) - Coverage HTML summary for `catalog.api`
 - [Integration API report (HTML)](../../../reports/integration-api-report.html)
-- [Coverage report (HTML)](../../../reports/coverage-integration-api-html/index.html)
+- Coverage report (HTML) - generated locally at `reports/coverage-integration-api-html/index.html`
 
 ## Integration API report view
 
