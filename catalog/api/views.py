@@ -65,9 +65,8 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @api_view(['GET'])
-def catalog_stats(request):
+def catalog_stats():
     """Return summary statistics for the library catalogue."""
-    from django.db.models import Count
     data = {
         'total_books': Book.objects.count(),
         'total_book_instances': BookInstance.objects.count(),

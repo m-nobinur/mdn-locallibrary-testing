@@ -1,9 +1,9 @@
 # Master Test Plan — MDN LocalLibrary Automated Testing Project
 
 **Document version:** 2.0  
-**Last updated:** 2026-04-29  
+**Last updated:** 2026-05-01
 **Project phase:** Phase 9 — Final Documentation and Reporting  
-**Author:** Project contributor  
+**Author:** Mohammad Nobinur
 **Application under test:** Django LocalLibrary (MDN tutorial fork)
 
 ---
