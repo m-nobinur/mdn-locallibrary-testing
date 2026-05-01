@@ -65,7 +65,7 @@ class LanguageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @api_view(['GET'])
-def catalog_stats():
+def catalog_stats(request):
     """Return summary statistics for the library catalogue."""
     data = {
         'total_books': Book.objects.count(),
