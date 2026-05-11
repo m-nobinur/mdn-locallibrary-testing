@@ -8,6 +8,8 @@
 
 A software quality assurance study project built on MDN's Django tutorial app — a modest library catalogue that, frankly, turns out to be a pretty ideal specimen for demonstrating a full test-pyramid implementation. On top of the original Django application, this repo adds a DRF REST API, borrow/return workflows, and nine test phases ranging from isolated unit assertions up to browser end-to-end UI journeys.
 
+Project demo: [https://youtu.be/cgehSYpB8Cc](https://youtu.be/cgehSYpB8Cc)
+
 Test strategy lives in [docs/master_test_plan.md](docs/master_test_plan.md). Every stumble along the way is catalogued in [docs/challenge_log.md](docs/challenge_log.md).
 
 ---
